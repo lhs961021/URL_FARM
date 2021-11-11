@@ -5,6 +5,13 @@
 * License: https://bootstrapmade.com/license/
 */
 
+/*
+프로젝트 하면서 추가하는 부분
+*/
+.shadow-hover{
+  transition: box-shadow .25s ease-in-out;
+}
+
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
@@ -242,7 +249,7 @@ h1, h2, h3, h4, h5, h6 {
 #hero {
   width: 100%;
   height: 100vh;
-  background: url("../img/hero-bg.jpg") top right no-repeat;
+  background: url("") top right no-repeat;
   background-size: cover;
   position: relative;
 }

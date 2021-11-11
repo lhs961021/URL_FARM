@@ -64,6 +64,21 @@
   <!-- Template Main JS File -->
   <script src="{% static 'js/main.js' %}"></script>
 
+  <script  src="{% static 'js/jquery-latest.min.js' %}"></script>
+
+    <script>
+    $(document).ready(function () {
+            $(".shadow-hover").hover(
+                function () {
+                    $(this).addClass("shadow");
+                }, function () {
+                    $(this).removeClass("shadow");
+                }
+            );
+
+        });
+    </script>
+
 </body>
 
 </html>
