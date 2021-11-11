@@ -8,8 +8,23 @@
         
         <div class="card shadow-hover mb-4">
             <div class="card-body" style="background-color: rgba(0,0,0,.025);">
+                <h5 class="card-title pb-1">URL 검색</h5>
+                <form action="{% url 'analyze:crawl'%}" method="POST" enctype="multipart/form-data">
+                {%csrf_token%}  
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="url" name="url" placeholder="검색어를 입력하세요."
+                            aria-label="검색어 입력" value="" required>
+                        <button type="submit" class="btn btn-outline-secondary" aria-label="검색">
+                            <i class="bi bi-search me-2"></i>검색</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card shadow-hover mb-4">
+            <div class="card-body" style="background-color: rgba(0,0,0,.025);">
                 <h5 class="card-title pb-1">저장된 URL 검색</h5>
-                <form action="" method="GET" onsubmit="return validation(this)">
+                <form action="" method="GET" >
                     <div class="input-group">
                         <input type="text" class="form-control" id="q" name="q" placeholder="검색어를 입력하세요."
                             aria-label="검색어 입력" value="{{ q|default_if_none:'' }}" required>

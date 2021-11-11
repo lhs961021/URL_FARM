@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    #app
+    'analyze',
+    
     #migrate시 필요
-    "django.contrib.sites",
+    'django.contrib.sites',
     
     #allauth
     'allauth',
