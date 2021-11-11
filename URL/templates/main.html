@@ -3,4 +3,13 @@
 {% block content %}
 {% comment %} 로그인 후 {% endcomment %}
 
+<section id="hero" class="d-flex flex-column justify-content-center">
+    <div class="container" data-aos="zoom-in" data-aos-delay="100">
+        <h1>URL 분석 저장 사이트
+            <p>팀 <span class="typed" data-typed-items=", Singapore"></span></p>
+        </h1>
+        <button type="button" class="btn"> <a href="{% url 'account_logout' %}">로그아웃</a></button>
+
+    </div>
+</section>
 {%endblock%}
