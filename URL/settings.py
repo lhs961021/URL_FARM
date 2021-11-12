@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     
     #app
     'analyze',
-    
+    'users',
     #migrate시 필요
     'django.contrib.sites',
     
