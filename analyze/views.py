@@ -4,4 +4,4 @@ from django.shortcuts import render,HttpResponse
 
 def crawl(request):
     return HttpResponse("여기서 크롤링해야함")
-     
+    
