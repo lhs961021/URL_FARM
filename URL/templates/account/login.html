@@ -2,21 +2,36 @@
 {% load static %}
 
 {% block content %}
-
-<section id="portfolio" style="background-size:100%; margin:200px">
-  <div style="width:300px; margin:0 auto; ">
-    <div class="wow fadeInUp" data-wow-delay="0.5s">
-      <div class="login-sec">
+<style>
+    .signup_container {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      margin-top: 40px;
+      width: 80%;
+      text-align: center;
+ 
+    }
+    .c-left{
+      width:50%;
+      margin:0 auto;
+      text-align:left;
+    }
+</style>
+<section id="hero" class="d-flex flex-column justify-content-center">
+ <div class="container-sm" data-aos="zoom-in" data-aos-delay="100">
+    <div class="signup_container">
         <form class="login" method="POST" action="{% url 'account_login' %}">
           {% csrf_token %} 
+          <div class="c-left">
           {{ form.as_p }}
           <div class="login-btn">
             <input type="submit" class="upload-btn btn btn-outline-dark" value="로그인" />
             <a class="btn btn-outline-dark" href="{% url 'account_signup' %}">회원가입</a>
           </div>
-          
+          </div>
         </form>
-      </div>
+
     </div>
   </div>
 </section>
