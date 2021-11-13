@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     
     #app
     'analyze',
+    'shared_chat',
     'users',
     
     #migrate시 필요
