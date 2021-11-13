@@ -23,7 +23,7 @@
         <form class="signup" method="POST" action="{% url 'account_signup' %}">
           {% csrf_token %} 
           <div class="c-left">
-          {{ form.as_p }}
+          {{ form.as_p }}<br>
           <div class="signup-btn">
             <input type="submit" class="upload-btn btn btn-outline-dark" value="완료" />
           </div>
