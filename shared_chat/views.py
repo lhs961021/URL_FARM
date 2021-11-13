@@ -45,12 +45,15 @@ def nick_check(request):
     
     nickname=nickname['nick']
     
-    list=Profile.objects.filter(nickname__contains=nickname)
+    if nickname == '': # 닉네임이 쳤다가 다지워서 빈게 contains인 경우 제외
+        list=''
+    else:
+        list=Profile.objects.filter(nickname__contains=nickname).exclude(nickname='')
     # print(list)
     
     nicklist={}
     for i in list:
         nicklist[i.id]=i.nickname
-    print(nicklist)
+    # print(nicklist)
     
     return HttpResponse(json.dumps(nicklist),content_type="application/json")
