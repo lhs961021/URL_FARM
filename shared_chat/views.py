@@ -2,7 +2,10 @@ from datetime import time
 from django.shortcuts import redirect, render
 from .models import Room
 from django.utils import timezone
-
+from django.views.decorators.http import require_POST
+import json
+from django.http import HttpResponse
+from users.models import Profile
 # Create your views here.
 
 def roomlist(request):
@@ -34,3 +37,20 @@ def saveroominfo(request,id): #맨처음 빈거 생성하고 바로수정변경�
     
 def chatroom(request,id):
     return render(request,'chat.html')
+
+@require_POST
+def nick_check(request):
+    
+    nickname=json.loads(request.body)
+    
+    nickname=nickname['nick']
+    
+    list=Profile.objects.filter(nickname__contains=nickname)
+    # print(list)
+    
+    nicklist={}
+    for i in list:
+        nicklist[i.id]=i.nickname
+    print(nicklist)
+    
+    return HttpResponse(json.dumps(nicklist),content_type="application/json")

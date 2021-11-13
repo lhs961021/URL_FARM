@@ -19,12 +19,63 @@
         <form action="{%url 'shared_chat:saveroominfo' room.id %}" method="post" enctype="multipart/form-data">
             {%csrf_token%}
             <p>방 명 : <input value="{{room.name}}" type="text" name="name" required></p>
-            <p>방 설명 : <textarea style="width: 100%;" type="text" name="description" id="" cols="50" rows="5"
+            <p>방 설명 : <textarea style="width: 100%;" type="text" name="description" id="" cols="50" rows="2"
                     required>{{room.description}}</textarea></p>
-            <p>참가자 : <input value="{{room.participants}}" type="text" name="participants" required></p>
+            닉네임 검색 : <input type="text" id="nick" onkeyup="search(this);"> 
+            <button id="nick_search" type="button" class="btn btn-outline-secondary" aria-label="닉검색">
+                                <i class="bi bi-search me-2"></i>검색</button>
+            <ul id="nicklist"></ul>
+
+
+            
+            <p>참가자 : <input readonly value="{{room.participants}}" type="text" name="participants" required></p>
+            
             <button class="confirmBtn" type="submit">저장</button>
+
         </form>
     </div>
 </section>
+
+<script>
+    function search(target){
+        var nick = target.value;
+        var info={
+            'nick':nick,
+        };
+        $.ajax({
+            headers:{
+                'X-CSRFTOKEN': '{{ csrf_token }}',
+            },
+            url : "{% url 'shared_chat:nick_check' %}",
+            type : 'POST',
+            dataType : 'json',
+            data : JSON.stringify(info),
+
+            success: function (response){
+                list=response;
+                console.log(list);
+
+                $('#nicklist').empty();
+                for(var key in list){
+                    $('#nicklist').append(`
+                    <li class="nicklist" data-input="${list[key]}" >
+                    <a href='javascript:void(0);'>${list[key]}</a>
+                    </li>
+                    `);
+                    
+                }
+
+            },
+
+            error: function(response){
+                console.log("ajax error");
+            },
+
+        });
+
+    }
+
+</script>
+
 
 {% endblock %}
