@@ -7,7 +7,8 @@ urlpatterns = [
     
     path('roomlist',roomlist,name="roomlist"),
     path('openroom',openroom,name="openroom"),
-    path('chat',chat,name="chat"),
+    path('saveroominfo/<int:id>',saveroominfo,name="saveroominfo"),
+    path('chatroom/<int:id>',chatroom,name="chatroom"),
     
     
 ]

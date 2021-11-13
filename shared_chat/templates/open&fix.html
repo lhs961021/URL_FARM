@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<style>
+.confirmBtn {
+  margin-top: 10px;
+  width: 100px;
+  color: white;
+  background-color: #ff8668;
+  padding: 6px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+</style>
+<section id="portfolio-details" class="portfolio-details">
+    <div class="container">
+        <form action="{%url 'shared_chat:saveroominfo' room.id %}" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <p>방 명 : <input value="{{room.name}}" type="text" name="name" required></p>
+            <p>방 설명 : <textarea style="width: 100%;" type="text" name="description" id="" cols="50" rows="5"
+                    required>{{room.description}}</textarea></p>
+            <p>참가자 : <input value="{{room.participants}}" type="text" name="participants" required></p>
+            <button class="confirmBtn" type="submit">저장</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

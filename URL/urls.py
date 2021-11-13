@@ -20,7 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index,name="index"),
     path('diff',diff,name="diff"),
-    path('shared_chat',include('shared_chat.urls')),
+    path('shared_chat/',include('shared_chat.urls')),
     path('accounts/', include('allauth.urls')),
     path('analyze/',include('analyze.urls')),
 ]

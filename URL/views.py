@@ -6,7 +6,7 @@ def index(request):
             info=URLAnalyze.objects.get(check=request.user.id)
             return render(request,'main.html',{"info":info})
         else: # 맨처음, 확인후 추가입력 해야 할 경우
-            print(request.user.profile.level)
+            # print(request.user.profile.level)
             return render(request,'main.html')
     else:
         return render(request,'index.html')
