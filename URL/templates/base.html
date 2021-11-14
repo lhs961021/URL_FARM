@@ -67,7 +67,7 @@
   <script  src="{% static 'js/jquery-latest.min.js' %}"></script>
 
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
             $(".shadow-hover").hover(
                 function () {
                     $(this).addClass("shadow");
@@ -77,6 +77,9 @@
             );
 
         });
+        
+        $('input').attr('autocomplete','off');
+
     </script>
 
 </body>

@@ -1,0 +1,111 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<style>
+.confirmBtn {
+  margin-top: 10px;
+  width: 100px;
+  color: white;
+  background-color: #ff8668;
+  padding: 6px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+.ul_cover_div{
+    padding:10px;
+    width:30%;
+}
+.ul_cover_p{
+    width:100%;
+    text-align:center;
+}
+#nick{
+    {% comment %} input {% endcomment %}
+    border:none;
+    text-align:center;
+}
+.nickli{
+    padding:10px;
+}
+.nickul{
+    padding:0;
+    text-align:center;
+    border:1px solid lightgray;
+    border-radius:5px;
+}
+</style>
+<section id="portfolio-details" class="portfolio-details">
+    <div class="container">
+        <form action="{%url 'shared_chat:saveroominfo' room.id %}" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <p>방 명 : <input value="{{room.name}}" type="text" name="name" required></p>
+            <p>방 설명 : <textarea style="width: 100%;" type="text" name="description" id="" cols="50" rows="2"
+                    required>{{room.description}}</textarea></p>
+            <div class="ul_cover_div">
+            <p class="ul_cover_p"><i class="bi bi-search me-2"></i><input placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"></p> 
+            <hr>
+            
+            <ul id="nicklist"></ul>
+            </div>
+
+
+            
+            <p>참가자 : <input readonly value="{{room.participants}}" type="text" name="participants" required></p>
+            
+            <button class="confirmBtn" type="submit">저장</button>
+
+        </form>
+    </div>
+</section>
+
+<script>
+    function search(target){
+        var nick = target.value;
+        var info={
+            'nick':nick,
+        };
+        $.ajax({
+            headers:{
+                'X-CSRFTOKEN': '{{ csrf_token }}',
+            },
+            url : "{% url 'shared_chat:nick_check' %}",
+            type : 'POST',
+            dataType : 'json',
+            data : JSON.stringify(info),
+
+            success: function (response){
+                list=response;
+                
+                if(Object.keys(list).length==0){
+                    $('#nicklist').removeClass("nickul");
+                }
+                else{
+                    $('#nicklist').addClass("nickul");
+                }
+                $('#nicklist').empty();
+                for(var key in list){
+                    
+                    $('#nicklist').append(`
+                    <li style="list-style:none;" class="nickli" data-input="${list[key]}" >
+                    <a style="color:black;" href='javascript:void(0);'>${list[key]}</a>
+                    </li>
+                    `);
+                    
+                }
+
+            },
+
+            error: function(response){
+                console.log("ajax error");
+            },
+
+        });
+
+    }
+
+</script>
+
+
+{% endblock %}

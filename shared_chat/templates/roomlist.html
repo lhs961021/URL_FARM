@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<section id="portfolio-details"  class="portfolio-details">
+
+    <div class="container" >
+
+        <h2><a href="{% url 'shared_chat:openroom' %}">방 파기</a></h2>
+        {%for room in rooms%}
+                {% if request.user.profile.nickname in room.participants %}
+                <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
+                <div class="portfolio-info shadow-hover" >
+                    <h3> {{room.name}}</h3>
+                    <ul>
+                        <li><strong>소개</strong> : {{room.description}}</li>
+                        <li><strong>참가자</strong> : {{room.participants}}</li>
+                    </ul>
+                </div>
+                </a>
+                <br>
+                {% endif %}
+        {%endfor%}
+
+        
+
+    </div>
+    
+
+</section>
+
+{% endblock %}
