@@ -136,10 +136,12 @@ textarea:focus{
         var li_id=$(e).attr('id');
         
         var t=li_t.replace(/\n/g, "");
+        t=t.trim()
         var key = li_id;
         if (real.val()==''){
 
             var dictparti={};
+            
             dictparti[key]=t;
             $('.participants').append(`<div class="shadow-hover divline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
 
