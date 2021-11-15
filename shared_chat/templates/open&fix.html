@@ -58,7 +58,7 @@ textarea:focus{
     border-radius:5px;
 }
 .spanline{
-    
+    display:inline-block;
     border: 1px solid lightgray;
     border-radius : 5px;
     padding : 5px;
@@ -100,14 +100,15 @@ textarea:focus{
                     required>{{room.description}}</textarea></p>
             <p style="color:gray"># 아래에서 참가시킬분의 닉네임을 검색하시고 선택해주세요</p>
             <div class="ul_cover_div">
-                <p class="ul_cover_p"><i class="bi bi-search me-2"></i><input style="padding:5px; border-radius:3px;" class="shadow-hover" placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"></p> 
-                <hr>
+                <p style="padding:5px; border-radius:3px;" class="shadow-hover ul_cover_p"><i class="bi bi-search me-2"></i><input placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"><hr></p> 
+                
                 <ul class="shadow-hover" id="nicklist"></ul>
             </div>
 
             <div class="shadow-hover parti_cover">
-            <p>참가자 명단</p>
-            <div class="participants"></div>
+                <p><span style="padding-bottom:3px; border-bottom:0.5px solid lightgray;">참가자 명단</span></p>
+                <div class="participants"></div>
+                <input class="real_parti" hidden value="" type="text" name="participants" required>
             </div>
             <button class="shadow-hover confirmBtn" type="submit">저장</button>
         </form>
@@ -117,12 +118,44 @@ textarea:focus{
 <script>
     function i_minus(e){
         var id = $(e).attr('id');
+        var dictparti = JSON.parse($('.real_parti').val());
         $(`.participant${id}`).remove();
+        if (id in dictparti){
+            delete dictparti[id];
+        }
+        if(Object.keys(dictparti).length==0){
+            $('.real_parti').val('');
+        }
+        else{
+            $('.real_parti').val(JSON.stringify(dictparti));
+        }
     }
     function li_click(e){
+        var real = $('.real_parti');
         var li_t=$(e).text();
         var li_id=$(e).attr('id');
-        $('.participants').append(`<span class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</span>`);
+        
+        var t=li_t.replace(/\n/g, "");
+        var key = li_id;
+        if (real.val()==''){
+
+            var dictparti={};
+            dictparti[key]=t;
+            $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+
+        }
+        else{ 
+            var dictparti = JSON.parse(real.val());
+            
+            if (!(key in dictparti)){
+                dictparti[key]=t;
+                $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+
+            }
+            
+        }
+        
+        real.val(JSON.stringify(dictparti));
     }
    
     function search(target){
