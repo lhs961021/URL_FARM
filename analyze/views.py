@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render,HttpResponse
 import requests
 from bs4 import BeautifulSoup
 from .models import *
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def beautifulcrawl(url):
@@ -13,6 +14,7 @@ def beautifulcrawl(url):
     content=content.get_text().replace("\n","").replace("// flash 오류를 우회하기 위한 함수 추가function _flash_removeCallback() {}","").replace("\t","")
     return title,content
 
+@login_required
 def crawl(request):
     url=request.POST['url']
     title,content=beautifulcrawl(url)
@@ -22,6 +24,7 @@ def crawl(request):
     post.title=title
     post.content=content
     post.check=request.user.id
+    post.writer=request.user
     post.save()
     request.user.profile.level+=1
     request.user.profile.save()
@@ -39,8 +42,8 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
 
     request.user.profile.level=0#url 내용 입력받아 저장하고 다시 첫단계로
     request.user.profile.save()
-    print(request.user.profile.level)
-    print(info.title)
+    # print(request.user.profile.level)
+    # print(info.title)
     return redirect('index')
 
 def analyze(request):

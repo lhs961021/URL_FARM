@@ -7,5 +7,5 @@ class URLAnalyze(models.Model):
     title= models.TextField(null=True)
     content=models.TextField(null=True)
     check=models.IntegerField(default=0)
-    writer = models.ForeignKey(User, on_delete=models.CASCADE,null = True)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
     

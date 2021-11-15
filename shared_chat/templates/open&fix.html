@@ -57,7 +57,7 @@ textarea:focus{
     border:1px solid lightgray;
     border-radius:5px;
 }
-.spanline{
+.divline{
     display:inline-block;
     border: 1px solid lightgray;
     border-radius : 5px;
@@ -65,10 +65,10 @@ textarea:focus{
     margin-right:10px;
     
 }
-.spanline:hover{
+.divline:hover{
     background:lightgray;
 }
-.spanline i:hover{
+.divline i:hover{
     cursor:pointer;
 }
 
@@ -77,7 +77,7 @@ textarea:focus{
     border: 1px solid lightgray;
     border-radius : 5px;
     padding : 10px;
-    height:90px;
+    height:100px;
     overflow:scroll;
     white-space: nowrap;
 }
@@ -136,12 +136,14 @@ textarea:focus{
         var li_id=$(e).attr('id');
         
         var t=li_t.replace(/\n/g, "");
+        t=t.trim()
         var key = li_id;
         if (real.val()==''){
 
             var dictparti={};
+            
             dictparti[key]=t;
-            $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+            $('.participants').append(`<div class="shadow-hover divline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
 
         }
         else{ 
@@ -149,7 +151,7 @@ textarea:focus{
             
             if (!(key in dictparti)){
                 dictparti[key]=t;
-                $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+                $('.participants').append(`<div class="shadow-hover divline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
 
             }
             

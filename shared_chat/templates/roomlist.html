@@ -1,25 +1,44 @@
 {% extends 'base.html'%}
 {% load static %}
 {% block content %}
+<script  src="{% static 'js/jquery-latest.min.js' %}"></script>
 
-<section id="portfolio-details"  class="portfolio-details">
+<section style="padding-left: 100px; padding-right:100px;" id="portfolio-details"  class="portfolio-details">
 
-    <div class="container" >
+    <div class="container" style="max-width:600px;" >
 
-        <h2><a href="{% url 'shared_chat:openroom' %}">방 파기</a></h2>
+        <h2><a href="{% url 'shared_chat:openroom' %}">방 생성</a></h2><br>
         {%for room in rooms%}
-                {% if request.user.profile.nickname in room.participants %}
-                <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
-                <div class="portfolio-info shadow-hover" >
-                    <h3> {{room.name}}</h3>
-                    <ul>
-                        <li><strong>소개</strong> : {{room.description}}</li>
-                        <li><strong>참가자</strong> : {{room.participants}}</li>
-                    </ul>
-                </div>
-                </a>
-                <br>
-                {% endif %}
+                <script>
+                    var dictparti={{room.participants|safe}};
+                    var nickdick = ({{mynick|safe}});
+                    var mynick= nickdick['mynick'];
+                    {% comment %} console.log(dictparti); {% endcomment %}
+                    var values=Object.values(dictparti);
+                    {% comment %} console.log(values+'hi'); {% endcomment %}
+                    if(values.includes(mynick)){
+                        participants='';
+                        for (i of values){
+                            participants+=i+" ";
+                        }
+                        html=`
+                        <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
+                        <div class="portfolio-info shadow-hover" >
+                            <h3 style="padding-left:5%;"> {{room.name}}</h3>
+                            <ul  class="newul">
+                                <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>소개</strong> : {{room.description}}</li>
+                                <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>참가자</strong> : ${participants} </li>
+                            </ul>
+                        </div>
+                        </a>
+                        <br>`;
+                        $('.container').append(html);
+                        
+                        
+                    }
+                </script>
+                
+               
         {%endfor%}
 
         
