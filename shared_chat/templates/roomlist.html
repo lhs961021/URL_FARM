@@ -2,12 +2,13 @@
 {% load static %}
 {% block content %}
 
-<section id="portfolio-details"  class="portfolio-details">
+<section style="padding-left: 100px; padding-right:100px;" id="portfolio-details"  class="portfolio-details">
 
     <div class="container" >
 
-        <h2><a href="{% url 'shared_chat:openroom' %}">방 파기</a></h2>
+        <h2><a href="{% url 'shared_chat:openroom' %}">방 생성</a></h2><br>
         {%for room in rooms%}
+                {% comment %} {{room.participants|dictsort:0}} {% endcomment %}
                 {% if request.user.profile.nickname in room.participants %}
                 <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
                 <div class="portfolio-info shadow-hover" >
