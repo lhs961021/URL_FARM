@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 class URLAnalyze(models.Model):
@@ -7,3 +7,5 @@ class URLAnalyze(models.Model):
     title= models.TextField(null=True)
     content=models.TextField(null=True)
     check=models.IntegerField(default=0)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    
