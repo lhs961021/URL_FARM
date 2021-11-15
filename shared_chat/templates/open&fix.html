@@ -2,6 +2,18 @@
 {% load static %}
 {% block content %}
 <style>
+.title{
+    width:100%;
+    max-width:200px;
+
+}
+input:focus {
+    outline:none;
+}
+
+textarea:focus{
+    outline:none;
+}
 .confirmBtn {
   margin-top: 10px;
   width: 100px;
@@ -10,12 +22,11 @@
   padding: 6px;
   border: none;
   border-radius: 8px;
-  margin-bottom: 30px;
   font-weight: bold;
 }
 .ul_cover_div{
     padding:10px;
-    width:30%;
+    max-width:400px;
 }
 .ul_cover_p{
     width:100%;
@@ -23,11 +34,22 @@
 }
 #nick{
     {% comment %} input {% endcomment %}
+    width:60%;
     border:none;
     text-align:center;
 }
 .nickli{
-    padding:10px;
+    margin:10px;
+    padding:5px;
+    white-space:nowrap; 
+    overflow:scroll;
+    list-style:none;
+
+}
+.nickli:hover{
+    cursor:pointer;
+    background:lightgray;
+    border-radius:5px;
 }
 .nickul{
     padding:0;
@@ -35,32 +57,107 @@
     border:1px solid lightgray;
     border-radius:5px;
 }
+.spanline{
+    display:inline-block;
+    border: 1px solid lightgray;
+    border-radius : 5px;
+    padding : 5px;
+    margin-right:10px;
+    
+}
+.spanline:hover{
+    background:lightgray;
+}
+.spanline i:hover{
+    cursor:pointer;
+}
+
+
+.parti_cover{
+    border: 1px solid lightgray;
+    border-radius : 5px;
+    padding : 10px;
+    height:90px;
+    overflow:scroll;
+    white-space: nowrap;
+}
+.out{
+    border:1px solid lightgray;
+    border-radius : 5px;
+    padding : 10px;
+    
+}
 </style>
-<section id="portfolio-details" class="portfolio-details">
-    <div class="container">
+  <script  src="{% static 'js/jquery-latest.min.js' %}"></script>
+
+<section style="padding-left: 160px; padding-right:160px;" id="portfolio-details" class="portfolio-details">
+    <div class="container shadow-hover out" style="max-width:650px; padding:30px;">
+        <h2>방 생성</h2><br>
         <form action="{%url 'shared_chat:saveroominfo' room.id %}" method="post" enctype="multipart/form-data">
             {%csrf_token%}
-            <p>방 명 : <input value="{{room.name}}" type="text" name="name" required></p>
-            <p>방 설명 : <textarea style="width: 100%;" type="text" name="description" id="" cols="50" rows="2"
+            <p>방 명<br> <input class="title out shadow-hover" value="{{room.name}}" type="text" name="name" required></p>
+            <p>방 설명  <textarea class="out shadow-hover" style="width: 100%;" type="text" name="description" id="" cols="50" rows="3"
                     required>{{room.description}}</textarea></p>
+            <p style="color:gray"># 아래에서 참가시킬분의 닉네임을 검색하시고 선택해주세요</p>
             <div class="ul_cover_div">
-            <p class="ul_cover_p"><i class="bi bi-search me-2"></i><input placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"></p> 
-            <hr>
-            
-            <ul id="nicklist"></ul>
+                <p style="padding:5px; border-radius:3px;" class="shadow-hover ul_cover_p"><i class="bi bi-search me-2"></i><input placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"><hr></p> 
+                
+                <ul class="shadow-hover" id="nicklist"></ul>
             </div>
 
-
-            
-            <p>참가자 : <input readonly value="{{room.participants}}" type="text" name="participants" required></p>
-            
-            <button class="confirmBtn" type="submit">저장</button>
-
+            <div class="shadow-hover parti_cover">
+                <p><span style="padding-bottom:3px; border-bottom:0.5px solid lightgray;">참가자 명단</span></p>
+                <div class="participants"></div>
+                <input class="real_parti" hidden value="" type="text" name="participants" required>
+            </div>
+            <button class="shadow-hover confirmBtn" type="submit">저장</button>
         </form>
     </div>
 </section>
 
 <script>
+    function i_minus(e){
+        var id = $(e).attr('id');
+        var dictparti = JSON.parse($('.real_parti').val());
+        $(`.participant${id}`).remove();
+        if (id in dictparti){
+            delete dictparti[id];
+        }
+        if(Object.keys(dictparti).length==0){
+            $('.real_parti').val('');
+        }
+        else{
+            $('.real_parti').val(JSON.stringify(dictparti));
+        }
+    }
+    function li_click(e){
+        var real = $('.real_parti');
+        var li_t=$(e).text();
+        var li_id=$(e).attr('id');
+        
+        var t=li_t.replace(/\n/g, "");
+        var key = li_id;
+        if (real.val()==''){
+
+            var dictparti={};
+            dictparti[key]=t;
+            $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+
+        }
+        else{ 
+            var dictparti = JSON.parse(real.val());
+            
+            if (!(key in dictparti)){
+                dictparti[key]=t;
+                $('.participants').append(`<div class="shadow-hover spanline participant${li_id}"><i id="${li_id}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${li_t}</div>`);
+
+            }
+            
+        }
+        
+        real.val(JSON.stringify(dictparti));
+    }
+   
     function search(target){
         var nick = target.value;
         var info={
@@ -88,8 +185,8 @@
                 for(var key in list){
                     
                     $('#nicklist').append(`
-                    <li style="list-style:none;" class="nickli" data-input="${list[key]}" >
-                    <a style="color:black;" href='javascript:void(0);'>${list[key]}</a>
+                    <li id="${key}" onclick="li_click(this)" class="nickli">
+                    ${list[key]}
                     </li>
                     `);
                     
@@ -104,7 +201,7 @@
         });
 
     }
-
+    
 </script>
 
 
