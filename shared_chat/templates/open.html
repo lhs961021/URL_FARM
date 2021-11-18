@@ -93,11 +93,11 @@ textarea:focus{
 <section style="padding-left: 160px; padding-right:160px;" id="portfolio-details" class="portfolio-details">
     <div class="container shadow-hover out" style="max-width:650px; padding:30px;">
         <h2>방 생성</h2><br>
-        <form action="{%url 'shared_chat:saveroominfo' room.id %}" method="post" enctype="multipart/form-data">
+        <form action="{%url 'shared_chat:saveroominfo' %}" method="post" enctype="multipart/form-data">
             {%csrf_token%}
-            <p>방 명<br> <input class="title out shadow-hover" value="{{room.name}}" type="text" name="name" required></p>
+            <p>방 명<br> <input class="title out shadow-hover" value="" type="text" name="name" required></p>
             <p>방 설명  <textarea class="out shadow-hover" style="width: 100%;" type="text" name="description" id="" cols="50" rows="3"
-                    required>{{room.description}}</textarea></p>
+                    required></textarea></p>
             <p style="color:gray"># 아래에서 참가시킬분의 닉네임을 검색하시고 선택해주세요</p>
             <div class="ul_cover_div">
                 <p style="padding:5px; border-radius:3px;" class="shadow-hover ul_cover_p"><i class="bi bi-search me-2"></i><input placeholder="닉네임 검색 " type="text" id="nick" onkeyup="search(this);"><hr></p> 
@@ -111,6 +111,8 @@ textarea:focus{
                 <input class="real_parti" hidden value="" type="text" name="participants" required>
             </div>
             <button class="shadow-hover confirmBtn" type="submit">저장</button>
+            <button class="shadow-hover confirmBtn" type="button"><a style="color:white;" href="{% url 'shared_chat:roomlist'%}">취소</a></button>
+
         </form>
     </div>
 </section>

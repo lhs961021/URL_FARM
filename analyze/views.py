@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render,HttpResponse
 import requests
 from bs4 import BeautifulSoup
 from .models import *
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -25,12 +26,13 @@ def crawl(request):
     post.content=content
     post.check=request.user.id
     post.writer=request.user
+    post.created_at=timezone.now()
+    post.updated_at=timezone.now()
     post.save()
     request.user.profile.level+=1
     request.user.profile.save()
     return redirect('index')
     
-
 def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때    
 
     info=URLAnalyze.objects.get(check=request.user.id)
@@ -38,6 +40,7 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     info.title=request.POST['title']
     info.content=request.POST['content']
     info.check=-1 #변경완료 check
+    info.updated_at=timezone.now()
     info.save()
 
     request.user.profile.level=0#url 내용 입력받아 저장하고 다시 첫단계로

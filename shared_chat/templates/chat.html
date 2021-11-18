@@ -1,0 +1,55 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+
+<div class="container">
+    <div class="content" >
+        
+            {% for j in l %}   
+                {% if j.writer == me %}
+                    <div class="message-orange">
+                        <p class="message-content">{{j.body}}</p>
+                        <div class="message-timestamp-right">SMS {{j.updated_at}} <br><div style="text-align: right;"><a href="{%url 'conversation:edit_talk' j.id %}">수정하기 </a><a href="{%url 'conversation:delete_talk' j.id %}">삭제하기</a></div> </div>
+                        
+                    </div>
+                    
+                {% else %}
+                    <div style="margin-left:40px; margin-bottom:2px;">
+                    {% if j.writer.id in num %}
+                    <div class="message-state">뻔선뻔후</div>
+                    {% endif %}
+
+                    {% if j.writer.id in adopt %}
+                    <div class="message-state">입양</div>
+                    {% endif %}
+
+                    {% if j.writer.id in dorm %}
+                    <div class="message-state" >긱라인</div>
+                    {% endif %}
+                    </div>
+                    <div class="message-blue">
+                        <p class="message-content" >{{j.body}}</p>
+                        <div class="message-timestamp-left">{{j.writer}}<br>  SMS {{j.updated_at}}</div>
+                    </div>
+                {% endif %}
+            
+        
+        {%endfor%}
+        
+    
+        
+        
+        <form action="{%url 'conversation:create_talk'%}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
+            {%csrf_token%}  
+                    <p class="comment-header" style="writing-mode: horizontal-tb;">댓글</p>
+                    <div class="input first"><textarea class="talk-input"  style="width: 160%; margin:2px 0px 50px 0px;; height: 94px; border-color: rgb(220, 220, 220); border-radius: 10px; float:left;" type="text" name="body" id="" cols="50" rows="3" 
+                    required></textarea></div>
+                    <div class="input two" style="margin-right: 0px;"><button class="sending" type="submit" style="float:right; height:94px; width: 20%; margin-left:0.5rem; margin-right:0%; position:relative; top: 0px; left:60%;">전송</button></div>
+                
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
