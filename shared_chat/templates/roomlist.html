@@ -2,11 +2,16 @@
 {% load static %}
 {% block content %}
 <script  src="{% static 'js/jquery-latest.min.js' %}"></script>
+<style>
+.deleteroom:hover{
+    cursor:pointer;
+}
+</style>
 
 <section style="padding-left: 100px; padding-right:100px;" id="portfolio-details"  class="portfolio-details">
 
     <div class="container" style="max-width:600px;" >
-
+        
         <h2><a href="{% url 'shared_chat:openroom' %}">방 생성</a></h2><br>
         {%for room in rooms%}
                 <script>
@@ -23,14 +28,17 @@
                         }
                         html=`
                         <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
-                        <div class="portfolio-info shadow-hover" >
-                            <h3 style="padding-left:5%;"> {{room.name}}</h3>
+                        <div style="position:relative;" class="portfolio-info shadow-hover" >
+                            <h3 style="padding-left:5%; margin-right:30px; white-space:nowrap; overflow:scroll;"> {{room.name}}</h3></a>
+                            {% if room.writer == request.user %}
+                            <i onclick="deleteroom({{room.id}})" style="position:absolute; top:20px; right:30px; font-size:25px;" class="deleteroom bi bi-x"></i>
+                            {%endif%}
                             <ul  class="newul">
                                 <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>소개</strong> : {{room.description}}</li>
                                 <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>참가자</strong> : ${participants} </li>
                             </ul>
                         </div>
-                        </a>
+                        
                         <br>`;
                         $('.container').append(html);
                         
@@ -47,5 +55,16 @@
     
 
 </section>
+<script>
+    function deleteroom(id){
+        if(confirm("정말 삭제하시겠습니까?")==true){
+            var url = "{% url 'shared_chat:deleteroom' 0 %}".replace('0',id);
+            document.location.href=url;
+        }
+        else{
+            return false;
+        }
+    }
+</script>
 
 {% endblock %}

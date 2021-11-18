@@ -1,5 +1,5 @@
 from datetime import time
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import Room
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,7 @@ import json
 from django.http import HttpResponse
 from users.models import Profile
 from django.db.models import Q
+from .models import Chat
 
 # Create your views here.
 
@@ -19,19 +20,30 @@ def roomlist(request):
     return render(request,'roomlist.html',{'rooms':rooms,'mynick':mynick})
 
 @login_required
-def openroom(request): #맨처음 빈거만들어서 함
+def openroom(request):
+    return render(request,'open.html')
+
+def saveroominfo(request): 
     newroom=Room()
-    newroom.name=''
-    newroom.description=''
-    newroom.participants=''
+    newroom.name=request.POST['name']
+    newroom.description=request.POST['description']
+    newroom.writer=request.user
+    parti=json.loads(request.POST['participants'])
+    parti[f'{newroom.writer.id}']=newroom.writer.profile.nickname
+    newroom.participants=parti
     newroom.created_at=timezone.now()
     newroom.updated_at=timezone.now()
-    newroom.writer=request.user
     newroom.save()
     
-    return render(request,'open&fix.html',{'room':newroom})
+    return redirect('shared_chat:chatroom',newroom.id)
 
-def saveroominfo(request,id): #맨처음 빈거 생성하고 바로수정변경때도 쓰고, 그냥 수정때도씀
+@login_required
+def fixroom(request, id):
+    fixroom=Room.objects.get(id=id)
+    
+    return render(request,'fix.html',{"room":fixroom})
+
+def updateroominfo(request,id): 
     
     thisroom=Room.objects.get(id=id)
     thisroom.name=request.POST['name']
@@ -41,10 +53,15 @@ def saveroominfo(request,id): #맨처음 빈거 생성하고 바로수정변경�
     thisroom.participants=parti
     thisroom.updated_at=timezone.now()
     thisroom.save()
-    return redirect('shared_chat:roomlist')
+    return redirect('shared_chat:chatroom', thisroom.id)
     
 def chatroom(request,id):
     return render(request,'chat.html')
+
+def deleteroom(request, id):
+    deleteroom=get_object_or_404(Room,id=id)
+    deleteroom.delete()
+    return redirect ('shared_chat:roomlist')
 
 @require_POST
 def nick_check(request):
@@ -65,3 +82,17 @@ def nick_check(request):
     # print(nicklist)
     
     return HttpResponse(json.dumps(nicklist),content_type="application/json")
+
+
+def create_chat(request,room_id):
+    room = get_object_or_404(Room,pk=room_id)
+    chat = Chat()
+    chat.writer = request.user
+    chat.body = request.POST['body']
+    chat.room = room
+    chat.created_at=timezone.now()
+    chat.updated_at=timezone.now()
+    chat.save()
+    
+    return redirect('shared_chat:chatroom',room_id)
+
