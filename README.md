@@ -58,4 +58,6 @@ $ python manage.py runserver
 requirements.txt
 
 - 파이썬 라이브러리 종속성 파일
+## 5. 배포
 
+서버 배포는 aws EC2의 Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - 64bit, t2.micro(프리티어) 인스턴스를 이용한다. 
