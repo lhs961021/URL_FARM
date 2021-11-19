@@ -38,7 +38,7 @@
 
                         </div><br><br>
                         <input class="form-control" type="text" value="{{info.title}}">
-                        <textarea class="form-control">{{info.content|truncatechars:50}}</textarea><br>
+                        <textarea class="form-control">{{info.content|truncatechars:100}}</textarea><br>
                         <p> 찾는 기사가 맞나요? </p>
                         <a href="{% url 'analyze:analyze'%}">네</a>
                         <a href="{% url 'diff' %}">아니요</a>

@@ -9,7 +9,7 @@
         margin-bottom: 10px;
         margin-top: 5px;
         padding: 15px;
-        background-color:#6478FF;
+        background-color: #6478FF;
         width: 30%;
         text-align: left;
         border: none;
@@ -166,12 +166,24 @@
         
             {% for i in chats %}   
                 {% if i.writer == request.user %}
-                    <div class="message-orange">
-                        <p class="message-content">{{i.body}}</p>
-                        <div class="message-timestamp-right"> {{i.updated_at}} <br><div style="text-align: right;"><a href="{%url 'shared_chat:fixchat' room_id i.id %}">수정하기 </a><a href="{%url 'shared_chat:delete_chat' room_id i.id %}">삭제하기</a></div> </div>
-                        
-                    </div>
-                    
+                    {% if i == pick %}
+
+                        <form action="{%url 'shared_chat:update_chat' room_id i.id %}" method="post" enctype="multipart/form-data" >
+                            {%csrf_token%}  
+                                <div class="message-orange">
+                                <textarea required type="text" name="body" rows="5" class="edit_textarea"
+                                style="width: 100%; margin-bottom: 40px; margin-top: 0px; height: 107px;">{{i.body}}</textarea>
+                                <div class="message-timestamp-right">{{i.updated_at}}</div>
+                                <button type="submit" style="border-radius: 5px;">수정하기</button>
+                            </div>
+                        </form>
+                    {%else%}
+                        <div class="message-orange">
+                            <p class="message-content">{{i.body}}</p>
+                            <div class="message-timestamp-right"> {{i.updated_at}} <br><div style="text-align: right;"></div> </div>
+                            
+                        </div>
+                    {%endif%}
                 {% else %}
                     {% comment %} <div style="margin-left:40px; margin-bottom:2px;">
                         <div class="message-state">ㅋㅋ</div>
@@ -187,15 +199,7 @@
             
         
         {%endfor%}
-        <form action="{%url 'shared_chat:create_chat' room_id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
-            {%csrf_token%}  
-                    <p class="comment-header" style="writing-mode: horizontal-tb;">댓글</p>
-                    <div class="input first">
-                    <textarea class="talk-input"  style="width: 160%; margin:2px 0px 50px 0px;; height: 94px; border-color: rgb(220, 220, 220); border-radius: 10px; float:left;" type="text" name="body" id="" cols="50" rows="3" 
-                    required></textarea></div>
-                    <div class="input two" style="margin-right: 0px;"><button class="sending" type="submit" style="float:right; height:94px; width: 20%; margin-left:0.5rem; margin-right:0%; position:relative; top: 0px; left:60%;">전송</button></div>
-                
-        </form>
+        
        
     </div>
 </div>

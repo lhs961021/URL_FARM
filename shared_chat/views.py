@@ -55,9 +55,6 @@ def updateroominfo(request,id):
     thisroom.save()
     return redirect('shared_chat:chatroom', thisroom.id)
     
-def chatroom(request,id):
-    return render(request,'chat.html')
-
 def deleteroom(request, id):
     deleteroom=get_object_or_404(Room,id=id)
     deleteroom.delete()
@@ -84,6 +81,11 @@ def nick_check(request):
     return HttpResponse(json.dumps(nicklist),content_type="application/json")
 
 
+def chatroom(request,room_id): #detail
+    chats = Chat.objects.all()
+    return render(request,'chat.html',{'chats':chats,'room_id':room_id})
+
+
 def create_chat(request,room_id):
     room = get_object_or_404(Room,pk=room_id)
     chat = Chat()
@@ -93,6 +95,28 @@ def create_chat(request,room_id):
     chat.created_at=timezone.now()
     chat.updated_at=timezone.now()
     chat.save()
+    
+    return redirect('shared_chat:chatroom',room_id)
+
+def fixchat(request,room_id,chat_id): 
+    chats = Chat.objects.all()
+    pick = get_object_or_404(Chat,pk=chat_id) 
+    return render(request,'update.html',{'chats':chats,'room_id':room_id,"pick":pick})
+
+
+def update_chat(request,room_id,chat_id):
+    # room = get_object_or_404(Room,pk=room_id)
+    chat = get_object_or_404(Chat,pk=chat_id)  
+    chat.body = request.POST['body']
+    chat.updated_at=timezone.now()
+    chat.save()
+    
+    return redirect('shared_chat:chatroom',room_id)
+
+def delete_chat(request,room_id,chat_id):
+    # room = get_object_or_404(Room,pk=room_id)
+    chat = get_object_or_404(Chat,pk=chat_id)
+    chat.delete()
     
     return redirect('shared_chat:chatroom',room_id)
 
