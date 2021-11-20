@@ -3,6 +3,8 @@
 {% block content %}
 
 <style>
+
+
     .message-blue {
         position: relative;
         margin-left: 40px;
@@ -10,25 +12,26 @@
         margin-top: 5px;
         padding: 15px;
         background-color:#6478FF;
-        width: 30%;
+        width: 45%;
         text-align: left;
         border: none;
-        border-radius: 18px;
+        border-radius: 10px;
         color:#fff;
         font-style: bold;
         opacity: 0.9;
         font-weight: bold;
+
     }
 
-    .message-orange {
+    .message-mine {
         position: relative;
         margin-bottom: 15px;
         margin-top: 20px;
-        margin-left: calc(100% - 35%);;
+        margin-left: calc(100% - 45%);;
         margin-right: 40px;
         padding: 10px;
         background-color: #F8FAFC;
-        width: 30%;
+        width: 45%;
         text-align: left;
         border: 1px solid #dcdcdc;
         border-radius: 10px;
@@ -52,6 +55,9 @@
         font-weight: 300;
         bottom: 8px;
         right: 8px;
+        word-break: break-all;
+        padding-left: 13px;
+
     }
 
     .message-timestamp-left {
@@ -60,7 +66,9 @@
         font-weight: 300;
         bottom: 8px;
         left: 8px;
-        padding-left: 13px;
+        word-break: break-all;
+        padding-right: 13px;
+
     }
 
     .message-state{
@@ -74,33 +82,17 @@
     
     }
     .talk-input {
-        resize:none;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        padding: 12px;
-        background: #F8FAFC;
-        flex: none;
-        order: 1;
-        align-self: stretch;
-        flex-grow: 0;
-        margin: 2px 0px 0px 0px;
-        left: 12px;
-        color: #B8BCCA;
-        align-self: stretch;
-        position: static;
-        right: 12px;
-        top: 135px;
+        border-radius:0 0 0 10px;
+        padding: 20px;
         font-style: normal;
         font-weight: normal;
         font-size: 16px;
         line-height: 100%;
         text-align: left;
         color: #6F7482;
-        flex: none;
-        order: 1;
-        flex-grow: 0;
-        margin:content;
+        resize:none;
+        border:none;
+        width:90%;
     }
 
     .content {
@@ -111,89 +103,52 @@
         border-radius: 10px;
         background: #D2D2FF;
         padding:20px;
-        
     }
-
-    .comment{
-        display: inline-flex;
-        margin-left: 30px;
-    
-    }
-
-    .input{
-        display: inline-flex;
-        width: 180%;
-    } 
-
     .sending{
-        background: #A0A0FF;
-        flex: none;
-        order: 1;
-        align-self: stretch;
-        flex-grow: 0;
-        margin: 2px 0px 0px 0px;
-        left: 12px;
-        color: #fe7f5d;
-        align-self: stretch;
-        position: static;
-        right: 12px;
-        top: 135px;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 1.2rem;
-        line-height: 100%;
-        text-align: center;
-        color: black;
-        flex: none;
-        order: 1;
-        flex-grow: 0;
-        border-radius: 10px;
-        border-style:none;
-        opacity: 0.9;
-        margin-right: 1%;  
+        width:10%;
+        height:90px;
+        border-radius:0 0 10px 0;
+        font-size:90%;
+    }
+     textarea:focus {
+        outline: none;
+    }
+    .chat{
+        display:flex;
     }
 
-    .comment-header{
-        margin-right: 20px;
-        font-weight: bold;
-        font-size: 1.1rem;
-        border-style:none;
-    }
+
 </style>
 
 <div class="container">
-    <div class="content" >
         
-            {% for i in chats %}   
+
+    <div class="content" >
+            <h2 style="padding:25px; color:gray;">{{room.name}}</h2>
+            {% for i in chats %}  
+           
                 {% if i.writer == request.user %}
-                    <div class="message-orange">
+                    <div class="message-mine">
                         <p class="message-content">{{i.body}}</p>
-                        <div class="message-timestamp-right"> {{i.updated_at}} <br><div style="text-align: right;"><a href="{%url 'shared_chat:fixchat' room_id i.id %}">수정하기 </a><a href="{%url 'shared_chat:delete_chat' room_id i.id %}">삭제하기</a></div> </div>
+                        <span class="message-timestamp-right"> {{i.updated_at}} <br><div style="text-align: right;"><a href="{%url 'shared_chat:fixchat' room.id i.id %}">수정하기 </a><a href="{%url 'shared_chat:delete_chat' room.id i.id %}">삭제하기</a></div> </span>
                         
                     </div>
                     
                 {% else %}
-                    {% comment %} <div style="margin-left:40px; margin-bottom:2px;">
-                        <div class="message-state">ㅋㅋ</div>
-
-                        <div class="message-state">ㅋㅋ</div>
-                        <div class="message-state" >ㅋㅋ</div>
-                    </div> {% endcomment %}
                     <div class="message-blue">
                         <p class="message-content" >{{i.body}}</p>
-                        <div class="message-timestamp-left">{{i.writer}}<br>   {{i.updated_at}}</div>
+                        <span class="message-timestamp-left">{{i.writer.profile.nickname}}<br>   {{i.updated_at}}</span>
                     </div>
                 {% endif %}
             
         
         {%endfor%}
-        <form action="{%url 'shared_chat:create_chat' room_id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
+        <form action="{%url 'shared_chat:create_chat' room.id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
             {%csrf_token%}  
-                    <p class="comment-header" style="writing-mode: horizontal-tb;">댓글</p>
-                    <div class="input first">
-                    <textarea class="talk-input"  style="width: 160%; margin:2px 0px 50px 0px;; height: 94px; border-color: rgb(220, 220, 220); border-radius: 10px; float:left;" type="text" name="body" id="" cols="50" rows="3" 
-                    required></textarea></div>
-                    <div class="input two" style="margin-right: 0px;"><button class="sending" type="submit" style="float:right; height:94px; width: 20%; margin-left:0.5rem; margin-right:0%; position:relative; top: 0px; left:60%;">전송</button></div>
+                    <div class="chat">
+                    <textarea class="talk-input"  type="text" name="body" id="" cols="50" rows="3" 
+                    required></textarea>
+                    <button class="btn btn-outline-dark sending" type="submit" >전송</button></div>
                 
         </form>
        

@@ -82,8 +82,9 @@ def nick_check(request):
 
 
 def chatroom(request,room_id): #detail
-    chats = Chat.objects.all()
-    return render(request,'chat.html',{'chats':chats,'room_id':room_id})
+    room = get_object_or_404(Room,pk=room_id)
+    chats = Chat.objects.filter(room=room).order_by('updated_at')
+    return render(request,'chat.html',{'chats':chats,'room':room})
 
 
 def create_chat(request,room_id):
@@ -99,9 +100,10 @@ def create_chat(request,room_id):
     return redirect('shared_chat:chatroom',room_id)
 
 def fixchat(request,room_id,chat_id): 
-    chats = Chat.objects.all()
+    room = get_object_or_404(Room,pk=room_id)
+    chats = Chat.objects.filter(room=room).order_by('updated_at')
     pick = get_object_or_404(Chat,pk=chat_id) 
-    return render(request,'update.html',{'chats':chats,'room_id':room_id,"pick":pick})
+    return render(request,'update.html',{'chats':chats,'room':room,"pick":pick})
 
 
 def update_chat(request,room_id,chat_id):

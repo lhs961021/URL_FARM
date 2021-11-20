@@ -3,24 +3,20 @@
 
 {% block content %}
 <style>
-    .signup_container {
-      display: flex;
-      flex-direction: column;
-      margin: 0 auto;
-      margin-top: 40px;
-      width: 80%;
-      text-align: center;
- 
-    }
-    .c-left{
-      width:50%;
-      margin:0 auto;
-      text-align:left;
-    }
+html,
+body {
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
-<section id="hero" class="d-flex flex-column justify-content-center">
- <div class="container-sm" data-aos="zoom-in" data-aos-delay="100">
-    <div class="signup_container">
+<div class="container">
+  <div>
         <form class="logout" method="POST" action="{% url 'account_logout' %}">
         <div class="c-left">
           {% comment %} <p>현재 {{user}}로 로그인 되어있습니다.</p> {% endcomment %}
@@ -37,7 +33,7 @@
 
         </form>
  
-    </div>
   </div>
-</section>
+</div>
+
 {% endblock %}
