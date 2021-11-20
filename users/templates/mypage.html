@@ -34,7 +34,7 @@
                         </svg>
                         <i class="bx bxl-dribbble"></i>
                     </div>
-                    <h4><a href="">{{url.title}}</a></h4>
+                    <h4><a href="{% url 'analyze:URL_detail' url.id %}">{{url.title}}</a></h4>
                     <p>{{url.content|truncatechars:70}}</p>
                 </div>
             </div>
