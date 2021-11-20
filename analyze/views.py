@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render,HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 import requests
 from bs4 import BeautifulSoup
 from .models import *
@@ -59,4 +59,8 @@ def analyze(request):
     info=URLAnalyze.objects.get(check=request.user.id)
     info.check=-1
     info.save()
-    return render(request,'detail.html')
+    return redirect('analyze:URL_detail',info.id)
+
+def URL_detail(request,id):
+    urlinfo=get_object_or_404(URLAnalyze,pk=id)
+    return render(request,'detail.html',{'urlinfo':urlinfo})

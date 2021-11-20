@@ -92,7 +92,7 @@ textarea:focus{
 
 <section style="padding-left: 160px; padding-right:160px;" id="portfolio-details" class="portfolio-details">
     <div class="container shadow-hover out" style="max-width:650px; padding:30px;">
-        <h2>방 생성</h2><br>
+        <h2>방 수정</h2><br>
         <form action="{%url 'shared_chat:updateroominfo' room.id %}" method="post" enctype="multipart/form-data">
             {%csrf_token%}
             <p>방 명<br> <input class="title out shadow-hover" value="{{room.name}}" type="text" name="name" required></p>

@@ -115,10 +115,10 @@
 </style>
 
 <div class="container">
-        <div>{{room.name}}</div>
 
     <div class="content" >
-        
+            <h2 style="padding:25px; color:gray;">{{room.name}}</h2>
+            
             {% for i in chats %}   
                 {% if i.writer == request.user %}
                     {% if i == pick %}
@@ -126,9 +126,9 @@
                         <form action="{%url 'shared_chat:update_chat' room.id i.id %}" method="post" enctype="multipart/form-data" >
                             {%csrf_token%}  
                                 <div class="message-mine">
-                                <textarea required type="text" name="body" rows="5" class="edit_textarea"
+                                <textarea onkeyup="enterkey();" required type="text" name="body" rows="5" class="edit_textarea"
                                 style="width: 100%; margin-bottom: 40px; margin-top: 0px; height: 107px;">{{i.body}}</textarea>
-                                <div class="message-timestamp-right">{{i.updated_at}} <button class="btn-outline-dark" type="submit" style="border-radius: 5px;"> 수정하기</button></div>
+                                <div class="message-timestamp-right">{{i.updated_at}} <button class="btn-outline-dark ck" type="submit" style="border-radius: 5px;"> 수정하기</button></div>
                                 
                             </div>
                         </form>
@@ -159,5 +159,17 @@
     </div>
 </div>
 
+<script>
+    function enterkey(){
+        if (window.event.keyCode == 13){
+            if(!window.event.shiftKey){
+                $('.ck').click();
+            }
+            else{   
+                $('.edit_textarea').append('\n');
+            }
+        }
+    }
 
+</script>
 {% endblock %}

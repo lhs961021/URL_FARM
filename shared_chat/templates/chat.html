@@ -17,8 +17,8 @@
         border: none;
         border-radius: 10px;
         color:#fff;
-        font-style: bold;
         opacity: 0.9;
+        font-style: bold;
         font-weight: bold;
 
     }
@@ -36,7 +36,8 @@
         border: 1px solid #dcdcdc;
         border-radius: 10px;
         align-content: left;
-        
+        font-style: bold;
+        font-weight: bold;
     }
 
     .message-content {
@@ -116,7 +117,12 @@
     .chat{
         display:flex;
     }
-
+    .fix:hover{
+        cursor:pointer;
+    }
+    .fix{
+        color:#14148C;
+    }
 
 </style>
 
@@ -124,7 +130,11 @@
         
 
     <div class="content" >
-            <h2 style="padding:25px; color:gray;">{{room.name}}</h2>
+            <h2 style="padding:25px; color:black; display:inline-block;">{{room.name}}</h2>
+            <a class="fix" href="{% url 'shared_chat:fixroom' room.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+            </svg></a>
             {% for i in chats %}  
            
                 {% if i.writer == request.user %}
@@ -143,10 +153,10 @@
             
         
         {%endfor%}
-        <form action="{%url 'shared_chat:create_chat' room.id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
+        <form class="chatform" action="{%url 'shared_chat:create_chat' room.id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
             {%csrf_token%}  
                     <div class="chat">
-                    <textarea class="talk-input"  type="text" name="body" id="" cols="50" rows="3" 
+                    <textarea class="talk-input" onkeyup="enterkey();" type="text" name="body" id="" cols="50" rows="3" 
                     required></textarea>
                     <button class="btn btn-outline-dark sending" type="submit" >전송</button></div>
                 
@@ -155,5 +165,18 @@
     </div>
 </div>
 
+<script>
+    function enterkey(){
+        if (window.event.keyCode == 13){
+            if(!window.event.shiftKey){
+                $('.sending').click();
+            }
+            else{   
+                $('.talk-input').append('\n');
+            }
+        }
+    }
+
+</script>
 
 {% endblock %}

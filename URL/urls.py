@@ -23,4 +23,5 @@ urlpatterns = [
     path('shared_chat/',include('shared_chat.urls')),
     path('accounts/', include('allauth.urls')),
     path('analyze/',include('analyze.urls')),
+    path('users/',include('users.urls')),
 ]

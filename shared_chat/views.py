@@ -40,7 +40,6 @@ def saveroominfo(request):
 @login_required
 def fixroom(request, id):
     fixroom=Room.objects.get(id=id)
-    
     return render(request,'fix.html',{"room":fixroom})
 
 def updateroominfo(request,id): 

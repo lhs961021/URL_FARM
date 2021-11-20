@@ -7,5 +7,6 @@ urlpatterns = [
     path('crawl',crawl,name="crawl"),
     path('analyze',analyze,name="analyze"),
     path('modify',modify,name="modify"),
+    path('URL_detail/<int:id>',URL_detail,name="URL_detail"),
     
 ]
