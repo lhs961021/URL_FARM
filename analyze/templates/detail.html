@@ -1,1 +1,51 @@
-분석분석
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<section id="portfolio-details" class="portfolio-details">
+    <div class="container">
+
+        <div class="row gy-4">
+
+            <div class="col-lg-8">
+                <div class="portfolio-details-slider swiper">
+                    <div class="swiper-wrapper align-items-center">
+
+                        <div class="swiper-slide">
+                        </div>
+
+                        <div class="swiper-slide">
+                        </div>
+
+                        <div class="swiper-slide">
+                        </div>
+
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="portfolio-info">
+                    <h3>{{urlinfo.title}}</h3>
+                    <ul>
+                        <li><strong>키워드</strong>: 키워드키워드</li>
+                        <li><strong>요약</strong>: 요약요약</li>
+                        <li><strong>게시물 수정</strong>: {{urlinfo.created_at}}</li>
+                        <li><strong>URL</strong>: <a href="{{urlinfo.url}}">{{urlinfo.url}}</a></li>
+                    </ul>
+                </div>
+                <div class="portfolio-description">
+                    <h2>본문</h2>
+                    <p>
+                        {{urlinfo.content}}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{%endblock%}
