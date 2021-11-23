@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from users.models import Profile
 from django.db.models import Q
 from .models import Chat
+from analyze.models import URLAnalyze
 
 # Create your views here.
 
@@ -83,7 +84,8 @@ def nick_check(request):
 def chatroom(request,room_id): #detail
     room = get_object_or_404(Room,pk=room_id)
     chats = Chat.objects.filter(room=room).order_by('updated_at')
-    return render(request,'chat.html',{'chats':chats,'room':room})
+    myurls = URLAnalyze.objects.filter(writer=request.user)
+    return render(request,'chat.html',{'chats':chats,'room':room,'myurls':myurls})
 
 
 def create_chat(request,room_id):
@@ -94,10 +96,19 @@ def create_chat(request,room_id):
     chat.room = room
     chat.created_at=timezone.now()
     chat.updated_at=timezone.now()
+    if(request.POST['urlid']):
+        urlid=request.POST['urlid']
+        urlid=int(urlid)
+        # print(urlid)
+        # print(type(urlid))
+        url=get_object_or_404(URLAnalyze,pk=urlid)
+        chat.url=url
     chat.save()
     
     return redirect('shared_chat:chatroom',room_id)
 
+
+    
 def fixchat(request,room_id,chat_id): 
     room = get_object_or_404(Room,pk=room_id)
     chats = Chat.objects.filter(room=room).order_by('updated_at')

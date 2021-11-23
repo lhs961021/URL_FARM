@@ -7,7 +7,6 @@
 
     .message-blue {
         position: relative;
-        margin-left: 40px;
         margin-bottom: 10px;
         margin-top: 5px;
         padding: 15px;
@@ -28,7 +27,7 @@
         margin-bottom: 15px;
         margin-top: 20px;
         margin-left: calc(100% - 45%);;
-        margin-right: 40px;
+        
         padding: 10px;
         background-color: #F8FAFC;
         width: 45%;
@@ -82,8 +81,19 @@
         color: black;
     
     }
-    .talk-input {
+    .url{
+        width:10%;
+        height:90px;
         border-radius:0 0 0 10px;
+    }
+    .sending{
+        width:10%;
+        height:90px;
+        border-radius:0 0 10px 0;
+        font-size:90%;
+    }
+    .talk-input {
+        
         padding: 20px;
         font-style: normal;
         font-weight: normal;
@@ -93,9 +103,9 @@
         color: #6F7482;
         resize:none;
         border:none;
-        width:90%;
+        width:80%;
     }
-
+    
     .content {
         margin-top : 10%;  
         margin-left: 10%; 
@@ -105,12 +115,7 @@
         background: #D2D2FF;
         padding:20px;
     }
-    .sending{
-        width:10%;
-        height:90px;
-        border-radius:0 0 10px 0;
-        font-size:90%;
-    }
+    
      textarea:focus {
         outline: none;
     }
@@ -123,13 +128,22 @@
     .fix{
         color:#14148C;
     }
+    .urlsendcover{
+        display:inline-block; 
+        border:1px solid black; 
+        padding:20px; 
+        border-radius: 10px 10px 0 0;
+        width:100%;
+        margin-bottom:10px;
+    }
+    
 
 </style>
 
-<div class="container">
+<div class="container" data-aos="fade-down">
         
 
-    <div class="content" >
+    <div class="content"  >
             <h2 style="padding:25px; color:black; display:inline-block;">{{room.name}}</h2>
             <a class="fix" href="{% url 'shared_chat:fixroom' room.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -139,29 +153,51 @@
            
                 {% if i.writer == request.user %}
                     <div class="message-mine">
-                        <p class="message-content">{{i.body}}</p>
+                        <p class="message-content">
+                        {% if i.url%}
+                        <a href="{% url 'analyze:URL_detail' i.url.id%}">{{i.url.title}}</a><br>
+                        {%endif%}{{i.body}}
+                        </p>
                         <span class="message-timestamp-right"> {{i.updated_at}} <br><div style="text-align: right;"><a href="{%url 'shared_chat:fixchat' room.id i.id %}">수정하기 </a><a href="{%url 'shared_chat:delete_chat' room.id i.id %}">삭제하기</a></div> </span>
                         
                     </div>
                     
                 {% else %}
                     <div class="message-blue">
-                        <p class="message-content" >{{i.body}}</p>
-                        <span class="message-timestamp-left">{{i.writer.profile.nickname}}<br>   {{i.updated_at}}</span>
+                        <p class="message-content" >
+                        {% if i.url%}
+                        <a href="{% url 'analyze:URL_detail' i.url.id%}">{{i.url.title}}</a><br>
+                        {%endif%}{{i.body}}
+                        </p>
+                        <span class="message-timestamp-left">{{i.writer.profile.nickname}}<br>{{i.updated_at}}</span>
                     </div>
                 {% endif %}
             
         
         {%endfor%}
+        
+
         <form class="chatform" action="{%url 'shared_chat:create_chat' room.id %}" method="post" enctype="multipart/form-data" style="margin-top: 20px; width:100%"  class="comment">
             {%csrf_token%}  
+                    <div style="display:none;" disabled class="urlsendcover">
+                        <label  for="urlid">전송할 url을 선택해 주세요</label>
+                        <select style="width:100%;" name="urlid" id="urlid" >
+                            <option value="">선택되지 않음</option>
+                        {% for mine in myurls %}
+                            <option value="{{mine.id}}">{{mine.title}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
                     <div class="chat">
-                    <textarea class="talk-input" onkeyup="enterkey();" type="text" name="body" id="" cols="50" rows="3" 
+                    <button onclick="url()" class="btn btn-outline-dark url" type="button" ><i class="bi bi-paperclip"></i></button>
+                    <textarea class="talk-input" onkeyup="enterkey();" type="text" name="body" cols="50" rows="3" 
                     required></textarea>
-                    <button class="btn btn-outline-dark sending" type="submit" >전송</button></div>
-                
+                    
+                    <button class="btn btn-outline-dark sending" type="submit" >전송</button>
+                    </div>
         </form>
-       
+
+        
     </div>
 </div>
 
@@ -175,8 +211,18 @@
                 $('.talk-input').append('\n');
             }
         }
+    }  
+    function url(){
+        if($('.urlsendcover').css("display")=='none'){
+            $('.urlsendcover').show();
+            $('.urlsendcover').attr("disable",false);
+        }
+        else{
+            $('.urlsendcover').hide();
+            $('.urlsendcover').attr("disable",true);
+        }
+        
     }
-
 </script>
 
 {% endblock %}

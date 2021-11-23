@@ -10,8 +10,9 @@
 }
 
 </style>
-<section id="services" class="services">
-    <div class="container" data-aos="fade-up">
+<section id="services" class="services" data-aos="fade-down">
+    <div class="container" >
+        
 
         <div class="section-title">
             <h2>MyPage</h2>
@@ -30,7 +31,26 @@
 
             </div>
         </div>
-
+        <div class="card shadow-hover mb-4">
+            <div class="card-body" style="background-color: rgba(0,0,0,.025);">
+                <h5 class="card-title pb-1">저장된 URL 검색</h5>
+                <form action="" method="GET" >
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="q" name="q" placeholder="검색어를 입력하세요."
+                            aria-label="검색어 입력" value="{{ q|default_if_none:'' }}" required>
+                        <button type="submit" class="btn btn-outline-secondary" aria-label="검색">
+                            <i class="bi bi-search me-2"></i>검색</button>
+                        {% if '?q=' in request.get_full_path %}
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-expanded="false" aria-label="검색 옵션"></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item fade-onclick" href="">검색 초기화</a></li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="row">
             {%for url in urls %}
             <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="zoom-in" data-aos-delay="100">
@@ -68,7 +88,14 @@
         var url = "{% url 'users:pick_url' 0 %}".replace('0',id);
         document.location.href=url;
     }
-    }
+
+    $(function(){
+		$("#services").animate({ scrollTop: 0 }, "slow"); 
+	});
+    
+
+}
+
 </script>
 
 {%endblock%}
