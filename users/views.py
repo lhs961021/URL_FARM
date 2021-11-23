@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 
 def mypage(request):
-    urls=URLAnalyze.objects.filter(Q(writer=request.user)&Q(check=-1))
+    urls=URLAnalyze.objects.filter(Q(writer=request.user)&Q(check=-1)).order_by('-updated_at')
     return render(request,'mypage.html',{'urls':urls})
 
 def pick_url(request, id):
@@ -20,6 +20,6 @@ def pick_url(request, id):
     
     # for i in picked.user_pick_url_set.values():
     #     print(i['time'])
-    print(me.profile.pick.count())
+    # print(me.profile.pick.count())
     return redirect('users:mypage')
     

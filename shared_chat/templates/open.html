@@ -90,7 +90,7 @@ textarea:focus{
 </style>
   <script  src="{% static 'js/jquery-latest.min.js' %}"></script>
 
-<section style="padding-left: 160px; padding-right:160px;" id="portfolio-details" class="portfolio-details">
+<section data-aos="fade-down" style="padding-left: 160px; padding-right:160px;" id="portfolio-details" class="portfolio-details">
     <div class="container shadow-hover out" style="max-width:650px; padding:30px;">
         <h2>방 생성</h2><br>
         <form action="{%url 'shared_chat:saveroominfo' %}" method="post" enctype="multipart/form-data">
