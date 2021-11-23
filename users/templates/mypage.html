@@ -1,6 +1,15 @@
 {% extends 'base.html'%}
 {% load static %}
 {% block content %}
+<style>
+.yet{
+    cursor:pointer;
+}
+.picked:hover{
+    cursor:pointer;
+}
+
+</style>
 <section id="services" class="services">
     <div class="container" data-aos="fade-up">
 
@@ -34,6 +43,12 @@
                         </svg>
                         <i class="bx bxl-dribbble"></i>
                     </div>
+                       
+                        {% if url in request.user.profile.pick.all %}
+                        <a href="{% url 'users:pick_url' url.id %}"><i class="picked bi bi-check-square-fill"></i></a>
+                        {% else%}
+                        <i onclick="count_query({{url.id}})" class="yet bi bi-check-square"></i>
+                        {%endif%}
                     <h4><a href="{% url 'analyze:URL_detail' url.id %}">{{url.title}}</a></h4>
                     <p>{{url.content|truncatechars:70}}</p>
                 </div>
@@ -42,5 +57,18 @@
         </div>
     </div>
 </section>
+
+<script>
+    function count_query(id){
+    var c={{request.user.profile.pick.count|safe}};
+    if (c>=6){
+        alert('이미 6개를 선택했습니다');
+    }
+    else{
+        var url = "{% url 'users:pick_url' 0 %}".replace('0',id);
+        document.location.href=url;
+    }
+    }
+</script>
 
 {%endblock%}

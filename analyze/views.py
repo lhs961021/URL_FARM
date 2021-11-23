@@ -64,3 +64,8 @@ def analyze(request):
 def URL_detail(request,id):
     urlinfo=get_object_or_404(URLAnalyze,pk=id)
     return render(request,'detail.html',{'urlinfo':urlinfo})
+
+def URL_delete(request,id):
+    urlinfo=get_object_or_404(URLAnalyze,pk=id)
+    urlinfo.delete()
+    return redirect('users:mypage')
