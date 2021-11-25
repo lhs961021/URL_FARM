@@ -18,3 +18,5 @@ class URLAnalyze(models.Model):
 class url_taken_by_user(models.Model): #다대다 관계를 위한 중개모델
     urlanalyze=models.ForeignKey(URLAnalyze,on_delete=models.CASCADE)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
+    time=models.DateTimeField(auto_now_add=True)
+    

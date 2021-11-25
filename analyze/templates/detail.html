@@ -33,13 +33,13 @@
                         <li><strong>요약</strong>: 요약요약</li>
                         <li><strong>게시물 수정</strong>: {{urlinfo.created_at}}</li>
                         <li><strong>URL</strong>: <a href="{{urlinfo.url}}">원문링크</a></li>
+                        {% if request.user == urlinfo.writer %}
                         <li><a href="{% url 'analyze:URL_delete' urlinfo.id %}">삭제</a></li>
-                        
+                        {%endif%}
                     </ul>
                 </div>
                 <div class="portfolio-description">
                     <h2>본문</h2>
-
                     <p>
                         {{urlinfo.content}}
                     </p>

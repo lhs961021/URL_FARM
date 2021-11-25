@@ -10,7 +10,7 @@
         margin-bottom: 10px;
         margin-top: 5px;
         padding: 15px;
-        background-color:#6478FF;
+        background-color:#AAB9FF;
         width: 45%;
         text-align: left;
         border: none;
@@ -41,7 +41,8 @@
 
     .message-content {
         width: 100%;
-        padding: 0;
+        padding-right: 5px;
+
         margin: 0;
         word-break: break-all;
         margin-bottom: 60px;
@@ -54,10 +55,18 @@
         font-size: .75em;
         font-weight: 300;
         bottom: 8px;
-        right: 8px;
+        right: 10px;
         word-break: break-all;
-        padding-left: 13px;
+        padding-left: 10px;
 
+    }
+    .book{
+        position:absolute;
+        top:8px;
+        right:8px;
+    }
+    .book:hover{
+        cursor:pointer;
     }
 
     .message-timestamp-left {
@@ -65,9 +74,9 @@
         font-size: .75em;
         font-weight: 300;
         bottom: 8px;
-        left: 8px;
+        left: 10px;
         word-break: break-all;
-        padding-right: 13px;
+        padding-right: 10px;
 
     }
 
@@ -145,10 +154,14 @@
 
     <div class="content"  >
             <h2 style="padding:25px; color:black; display:inline-block;">{{room.name}}</h2>
-            <a class="fix" href="{% url 'shared_chat:fixroom' room.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-            </svg></a>
+            {% if room.writer == request.user %}
+            <a class="fix" href="{% url 'shared_chat:fixroom' room.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+            </a>
+            {% endif %}
             {% for i in chats %}  
            
                 {% if i.writer == request.user %}
@@ -165,7 +178,13 @@
                 {% else %}
                     <div class="message-blue">
                         <p class="message-content" >
+                        
                         {% if i.url%}
+                            {% if request.user in i.url.taken.all %}
+                            <a href="{% url 'analyze:taken_url' i.url.id %}"><i class="book bi bi-bookmark-fill"></i></a>
+                            {% else %}
+                            <a href="{% url 'analyze:taken_url' i.url.id %}"><i class="book bi bi-bookmark"></i></a>
+                            {%endif%}
                         <a href="{% url 'analyze:URL_detail' i.url.id%}">{{i.url.title}}</a><br>
                         {%endif%}{{i.body}}
                         </p>
@@ -185,6 +204,9 @@
                             <option value="">선택되지 않음</option>
                         {% for mine in myurls %}
                             <option value="{{mine.id}}">{{mine.title}}</option>
+                        {% endfor %}
+                        {% for brought in request.user.brought.all %}
+                            <option value="{{brought.id}}">{{brought.title}}</option>
                         {% endfor %}
                         </select>
                     </div>

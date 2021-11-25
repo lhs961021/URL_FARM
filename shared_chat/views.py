@@ -31,6 +31,8 @@ def saveroominfo(request):
     newroom.writer=request.user
     parti=json.loads(request.POST['participants'])
     parti[f'{newroom.writer.id}']=newroom.writer.profile.nickname
+    #여기서 id값으로 add
+    print(list(parti.keys()))
     newroom.participants=parti
     newroom.created_at=timezone.now()
     newroom.updated_at=timezone.now()

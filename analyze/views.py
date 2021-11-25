@@ -69,3 +69,15 @@ def URL_delete(request,id):
     urlinfo=get_object_or_404(URLAnalyze,pk=id)
     urlinfo.delete()
     return redirect('users:mypage')
+
+def taken_url(request, id):
+    
+    url=get_object_or_404(URLAnalyze,pk=id)
+    me=get_object_or_404(User,pk=request.user.id)
+    
+    if me in url.taken.all():
+        url.taken.remove(me)
+    else:
+        url.taken.add(me)
+    
+    return redirect('users:mypage')
