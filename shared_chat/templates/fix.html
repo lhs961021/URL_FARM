@@ -116,6 +116,14 @@ textarea:focus{
 </section>
 
 <script>
+    window.onload=function(){
+        var roomparti = {{already|safe}};
+        for( var key in roomparti){
+            $('.participants').append(`<div class="shadow-hover divline participant${key}"><i id="${key}" onclick="i_minus(this)" class="bi bi-dash-square"></i>${roomparti[key]}</div>`);   
+        }
+        $('.real_parti').val(JSON.stringify(roomparti)); 
+    }
+
     function i_minus(e){
         var id = $(e).attr('id');
         var dictparti = JSON.parse($('.real_parti').val());

@@ -14,39 +14,22 @@
         
         <h2><a href="{% url 'shared_chat:openroom' %}">방 생성</a></h2><br>
         {%for room in rooms%}
-                <script>
-                    var dictparti={{room.participants|safe}};
-                    var nickdick = ({{mynick|safe}});
-                    var mynick= nickdick['mynick'];
-                    {% comment %} console.log(dictparti); {% endcomment %}
-                    var values=Object.values(dictparti);
-                    {% comment %} console.log(values+'hi'); {% endcomment %}
-                    if(values.includes(mynick)){
-                        participants='';
-                        for (i of values){
-                            participants+=i+" ";
-                        }
-                        html=`
-                        <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
-                        <div style="position:relative;" class="portfolio-info shadow-hover" >
-                            <h3 style="padding-left:5%; margin-right:30px; white-space:nowrap; overflow:scroll;"> {{room.name}}</h3></a>
-                            {% if room.writer == request.user %}
-                            <i onclick="deleteroom({{room.id}})" style="position:absolute; top:20px; right:30px; font-size:25px;" class="deleteroom bi bi-x"></i>
-                            {%endif%}
-                            <ul  class="newul">
-                                <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>소개</strong> : {{room.description}}</li>
-                                <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>참가자</strong> : ${participants} </li>
-                            </ul>
-                        </div>
+            {% if request.user in room.participants.all %}
+                <div style="position:relative;" class="portfolio-info shadow-hover" >
+                    <a style="color:black;" href="{% url 'shared_chat:chatroom' room.id %}">
+                        <h3 style="padding-left:5%; margin-right:30px; white-space:nowrap; overflow:scroll;"> {{room.name}}</h3>
+                    </a>
+                    {% if room.writer == request.user %}
+                        <i onclick="deleteroom({{room.id}})" style="position:absolute; top:20px; right:30px; font-size:25px;" class="deleteroom bi bi-x"></i>
+                    {%endif%}
+                    <ul  class="newul">
+                        <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>소개</strong> : {{room.description}}</li>
+                        <li style="white-space:nowrap; overflow:scroll; padding-right:5%; padding-left:5%;"><strong>참가자</strong> : {% for i in room.participants.all %} {{i.profile.nickname}} {%endfor%}</li>
+                    </ul>
+                </div>
                         
-                        <br>`;
-                        $('.container').append(html);
-                        
-                        
-                    }
-                </script>
-                
-               
+                <br>   
+            {% endif %}
         {%endfor%}
 
         

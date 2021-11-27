@@ -10,6 +10,8 @@ from users.models import Profile
 from django.db.models import Q
 from .models import Chat
 from analyze.models import URLAnalyze
+from django.contrib.auth.models import User
+
 
 # Create your views here.
 
@@ -29,32 +31,46 @@ def saveroominfo(request):
     newroom.name=request.POST['name']
     newroom.description=request.POST['description']
     newroom.writer=request.user
-    parti=json.loads(request.POST['participants'])
-    parti[f'{newroom.writer.id}']=newroom.writer.profile.nickname
-    #여기서 id값으로 add
-    print(list(parti.keys()))
-    newroom.participants=parti
     newroom.created_at=timezone.now()
     newroom.updated_at=timezone.now()
     newroom.save()
+    
+    parti=json.loads(request.POST['participants'])
+    parti[f'{newroom.writer.id}']=newroom.writer.profile.nickname
+    #여기서 id값으로 add
+    participant=list(parti.keys())
+    join=User.objects.filter(id__in=participant)
+    for person in join:
+        newroom.participants.add(person)
     
     return redirect('shared_chat:chatroom',newroom.id)
 
 @login_required
 def fixroom(request, id):
     fixroom=Room.objects.get(id=id)
-    return render(request,'fix.html',{"room":fixroom})
+    already={}
+    for i in fixroom.participants.all():
+        if i !=request.user:
+            already[i.id]=i.profile.nickname
+    # print(already)
+    return render(request,'fix.html',{"room":fixroom,"already":already})
 
 def updateroominfo(request,id): 
     
     thisroom=Room.objects.get(id=id)
     thisroom.name=request.POST['name']
     thisroom.description=request.POST['description']
-    parti=json.loads(request.POST['participants'])
-    parti[f'{thisroom.writer.id}']=thisroom.writer.profile.nickname
-    thisroom.participants=parti
     thisroom.updated_at=timezone.now()
     thisroom.save()
+    
+    parti=json.loads(request.POST['participants'])
+    parti[f'{thisroom.writer.id}']=thisroom.writer.profile.nickname
+    participant=list(parti.keys())
+    join=User.objects.filter(id__in=participant)
+    thisroom.participants.clear()
+    for person in join:
+        thisroom.participants.add(person)
+    
     return redirect('shared_chat:chatroom', thisroom.id)
     
 def deleteroom(request, id):
