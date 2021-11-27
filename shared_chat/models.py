@@ -8,11 +8,19 @@ class Room(models.Model):
     id = models.AutoField(primary_key=True)
     name=models.CharField(max_length=30,default="",null=True)
     description=models.TextField(null=True)
-    participants=models.JSONField(null=True)
+    # participants=models.JSONField(null=True)
     #참가자를 json꼴로 받았는데 생각해보니 다대다필드 써서해도됐음. 오히려 그게 더 맞았을듯 개인정보가 수정되더라도 변경될거니까 
+    participants=models.ManyToManyField(User,related_name="invited",
+                                        through="invite_people")
     created_at = models.DateTimeField(auto_now=False)
     updated_at = models.DateTimeField(auto_now=True)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+class invite_people(models.Model):
+    room = models.ForeignKey(Room,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    time=models.DateTimeField(auto_now_add=True)
+    
 
 class Chat(models.Model):
     id = models.AutoField(primary_key=True)
