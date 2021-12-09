@@ -7,12 +7,12 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
-
+import pickle
 
 
 
 def predict_category(doc):
-    category=['IT_과학', '경제', '국제', '문화', '사회', '스포츠', '정치', '지역']
+    category=['IT', 'Economy', 'International', 'Culture', 'Society', 'Sports', 'Politics', 'Area']
     loaded_model = load_model('ml/best_model',compile=False)
     
     pos=okt_pos(doc)
@@ -23,7 +23,9 @@ def predict_category(doc):
     data=pd.DataFrame.from_dict(docu)
  
     
-    tokenizer=Tokenizer()
+    with open('ml/tokenizer.pickle', 'rb') as handle:
+        tokenizer= pickle.load(handle)
+    
     tokenizer.fit_on_texts(data['본문'])
     sequence=tokenizer.texts_to_sequences(data['본문'])
     max_len=72 #학습할때 시퀀스 최대길이
@@ -31,7 +33,7 @@ def predict_category(doc):
     #truncating='post', padding='post' 앞에꺼는 길이가 안맞을때 뒤에 0으로 채운다는거, 뒤에꺼는 넘어갈때 뒤에 자른다는거
     result=loaded_model.predict(padding)
     result=np.argmax(result,axis=1)[0]
-    
+    print(category[result])
     return category[result]
     
 

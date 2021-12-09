@@ -31,6 +31,8 @@
                     <ul>
                         <li><strong>키워드</strong>: 키워드키워드</li>
                         <li><strong>요약</strong>: 요약요약</li>
+                        <li><strong>카테고리</strong>: {{urlinfo.category}}</li>
+
                         <li><strong>게시물 수정</strong>: {{urlinfo.created_at}}</li>
                         <li><strong>URL</strong>: <a href="{{urlinfo.url}}">원문링크</a></li>
                         {% if request.user == urlinfo.writer %}
