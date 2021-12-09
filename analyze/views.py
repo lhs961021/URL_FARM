@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from ml.predict import predict_category
+
 # Create your views here.
 
 def beautifulcrawl(url):
@@ -41,6 +43,7 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     info.content=request.POST['content']
     info.check=-1 #변경완료 check
     info.updated_at=timezone.now()
+    info.category=predict_category(info.content) #고치기
     info.save()
 
     request.user.profile.level=0#url 내용 입력받아 저장하고 다시 첫단계로
@@ -49,7 +52,7 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     # print(info.title)
     return redirect('index')
 
-def analyze(request):
+def analyze(request): #맞나요? 해서 맞다하면 여기로옴
     
     request.user.profile.level=0#url 크롤링 잘된거 확인하고 다시 첫단계로
     request.user.profile.save()
@@ -57,8 +60,12 @@ def analyze(request):
     # 분석시작해야함 그런데 여기서 불러올때는 내 urlanalyze모델에 check칼럼에 내 id값이 저장되어있는걸로 불러오고
     # 전처리하고 check값 -1로 바꿔주기(이 url 전처리 다했다 인증임)
     info=URLAnalyze.objects.get(check=request.user.id)
+    info.category=predict_category(info.content) #카테고리도 여기서
+    
     info.check=-1
     info.save()
+    # print(predict_category(info.content))
+    
     return redirect('analyze:URL_detail',info.id)
 
 def URL_detail(request,id):
