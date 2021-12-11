@@ -15,6 +15,8 @@ from wordcloud import WordCloud
 import platform 
 from django.conf import settings
 import os
+from krwordrank.word import KRWordRank
+from krwordrank.hangle import normalize
 # import matplotlib.pyplot as plt
 
 
@@ -93,5 +95,49 @@ def tfidfwordcloud(doc,id):
     # print(path)
     pathname=f'wordcloud{id}-1.jpg'
     path=os.path.join(path,pathname)
-    print(path)
+    # print(path)
     wordcloud.to_file(path)
+
+def krwordrank_keyword_wordcloud(doc,id):
+    
+    texts=doc.split('.')
+    texts = [normalize(text, english=True, number=True) for text in texts]
+    
+    wordrank_extractor = KRWordRank(
+    min_count = 3, # 단어의 최소 출현 빈도수 (그래프 생성 시)
+    max_length = 10, # 단어의 최대 길이
+    verbose = True
+    )
+
+    beta = 0.85    # PageRank의 decaying factor beta
+    max_iter = 10
+
+    keywords, rank, graph = wordrank_extractor.extract(texts, beta, max_iter)
+    noun_string = ""
+    keyworddic={}
+    keywordid=1
+    for word, r in sorted(keywords.items(), key=lambda x:x[1], reverse=True)[:30]:
+        noun_string += word + " "
+        if keywordid<4:
+            keyworddic[keywordid]=word
+            keywordid+=1
+    # print('%8s:\t%.4f' % (word, r))
+    noun_string = noun_string.strip()
+    
+    if platform.system() == 'Darwin': #맥
+        wordcloud=WordCloud(font_path="AppleGothic",width=800,height=800,background_color='white',max_font_size=2000)
+    elif platform.system() == 'Windows': #윈도우
+        wordcloud=WordCloud(font_path="Malgun Gothic",width=800,height=800,background_color='white',max_font_size=2000)
+    elif platform.system() == 'Linux': #리눅스 (구글 콜랩)
+        wordcloud=WordCloud(font_path="Malgun Gothic",width=800,height=800,background_color='white',max_font_size=2000)
+    wordcloud.generate(noun_string)
+    path=settings.STATICFILES_DIRS
+    path="".join(path)
+    path=os.path.join(path,'img')
+    path=os.path.join(path,'wordcloud')
+    # print(path)
+    pathname=f'wordcloud{id}-2.jpg'
+    path=os.path.join(path,pathname)
+    # print(path)
+    wordcloud.to_file(path)
+    return keyworddic

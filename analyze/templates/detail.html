@@ -14,10 +14,11 @@
                         
                         <div style="width:100%; height:100%; text-align:center;" class="fwordcloud swiper-slide">
                             <img style="witdh:100%; height:100%; max-width:630px; max-height:630px;" src="{% get_static_prefix %}img/wordcloud/wordcloud{{urlinfo.id}}-1.jpg" alt="워드클라우드1"/>
+                            <p>TF-IDF WORDCLOUD</p>
                         </div>
                         <div style="width:100%; height:100%; text-align:center;" class="swiper-slide">
-                            {% comment %} <img style="witdh:100%; height:100%; max-width:630px; max-height:630px;" src="{% static 'img/word.jpg' %}" alt=""> {% endcomment %}
-
+                            <img style="witdh:100%; height:100%; max-width:630px; max-height:630px;" src="{% get_static_prefix %}img/wordcloud/wordcloud{{urlinfo.id}}-2.jpg" alt="워드클라우드2"/>
+                            <p>KRWORDRANK WORDCLOUD</p>
                         </div>
 
 
@@ -31,10 +32,10 @@
                     <h3>{{urlinfo.title}}</h3>
                     <ul>
 
-                        <li><strong>키워드</strong>: 키워드키워드</li>
+                        <li><strong>키워드</strong>: {%for i,j in urlinfo.keyword.items %} {{j}} {% endfor %}</li>
                         <li><strong>카테고리</strong>: {{urlinfo.category}}</li>
 
-                        <li><strong>게시물 수정</strong>: {{urlinfo.created_at}}</li>
+                        <li><strong>생성</strong>: {{urlinfo.created_at}}</li>
                         <li><strong>URL</strong>: <a href="{{urlinfo.url}}">원문링크</a></li>
                         {% if request.user == urlinfo.writer %}
                         <li><a href="{% url 'analyze:URL_delete' urlinfo.id %}">삭제</a></li>
