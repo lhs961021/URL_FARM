@@ -9,6 +9,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
 import pickle
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import defaultdict
+from wordcloud import WordCloud
+import platform 
+from django.conf import settings
+import os
+# import matplotlib.pyplot as plt
 
 
 def predict_category(doc):
@@ -46,3 +53,45 @@ def okt_pos(doc):
             pos.append(i)
     
     return pos
+
+def tfidfwordcloud(doc,id):
+    l=[]
+    l.append(doc)
+    d={}
+    d["본문"]=l
+    d=pd.DataFrame.from_dict(d)
+    
+    vectorizer=TfidfVectorizer()
+    matrix=vectorizer.fit_transform(d['본문'])
+    
+    word2id = defaultdict(lambda : 0)
+    for idx, feature in enumerate(vectorizer.get_feature_names_out()):
+        word2id[feature] = idx
+        
+    ll=[]
+    for i, sent in enumerate(d['본문']):
+        print('====== document[%d] ======' % i)
+        ll.append([ (token, matrix[i, word2id[token]]) for token in sent.split() ] )
+        
+    dic={}
+    dic['tf-idf']=ll
+    dic=pd.DataFrame.from_dict(dic)
+    
+    if platform.system() == 'Darwin': #맥
+        wordcloud=WordCloud(font_path="AppleGothic",width=800,height=800,background_color='white',max_font_size=2000)
+    elif platform.system() == 'Windows': #윈도우
+        wordcloud=WordCloud(font_path="Malgun Gothic",width=800,height=800,background_color='white',max_font_size=2000)
+        
+    elif platform.system() == 'Linux': #리눅스 (구글 콜랩)
+        wordcloud=WordCloud(font_path="Malgun Gothic",width=800,height=800,background_color='white',max_font_size=2000)
+        
+    wordcloud.generate_from_frequencies(dict(dic['tf-idf'][0]))
+    path=settings.STATICFILES_DIRS
+    path="".join(path)
+    path=os.path.join(path,'img')
+    path=os.path.join(path,'wordcloud')
+    # print(path)
+    pathname=f'wordcloud{id}-1.jpg'
+    path=os.path.join(path,pathname)
+    print(path)
+    wordcloud.to_file(path)
