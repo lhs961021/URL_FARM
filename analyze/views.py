@@ -5,7 +5,7 @@ from gensim.summarization.summarizer import summarize
 from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from ml.predict import predict_category,tfidfwordcloud
+from ml.predict import predict_category,tfidfwordcloud,krwordrank_keyword_wordcloud
 
 
 # Create your views here.
@@ -47,7 +47,11 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     info.check=-1 #변경완료 check
     info.updated_at=timezone.now()
     info.category=predict_category(info.content) #고치기
+    
     tfidfwordcloud(info.content,info.id) #워드클라우드
+    keyword=krwordrank_keyword_wordcloud(info.content,info.id) #krwordrank
+    info.keyword=keyword
+    
     info.content=summarize(info.content,word_count=70) #본문요약
     info.save()
 
@@ -66,6 +70,8 @@ def analyze(request): #맞나요? 해서 맞다하면 여기로옴
     info=URLAnalyze.objects.get(check=request.user.id)
     info.category=predict_category(info.content) #카테고리도 여기서
     tfidfwordcloud(info.content,info.id) #워드클라우드
+    keyword=krwordrank_keyword_wordcloud(info.content,info.id) #krwordrank
+    info.keyword=keyword
     info.content=summarize(info.content,word_count=70) #본문요약
     info.check=-1
     info.save()

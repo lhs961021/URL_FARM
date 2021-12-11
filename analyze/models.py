@@ -13,6 +13,7 @@ class URLAnalyze(models.Model):
     taken= models.ManyToManyField(User,related_name='brought',
                                  through='url_taken_by_user') #퍼간거
     category = models.CharField(max_length=10,null=True)
+    keyword = models.JSONField(null=True)
     # image = models.ImageField(upload_to="cloud/",null=True,blank=True)
     # 이미지랑 요약본이랑 주요 키워드 정도도 추가해야함, 메모모델도
     
