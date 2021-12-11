@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 import requests
 from bs4 import BeautifulSoup
+from gensim.summarization.summarizer import summarize
 from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from ml.predict import predict_category
+from ml.predict import predict_category,tfidfwordcloud
+
 
 # Create your views here.
 
@@ -14,7 +16,8 @@ def beautifulcrawl(url):
     soup = BeautifulSoup(webpage.content,"html.parser")
     title=soup.title.string
     content=soup.find('div',attrs={'id':'articleBodyContents'})
-    content=content.get_text().replace("\n","").replace("// flash 오류를 우회하기 위한 함수 추가function _flash_removeCallback() {}","").replace("\t","")
+    content=content.get_text().replace("\n","").replace("// flash 오류를 우회하기 위한 함수 추가function _flash_removeCallback() {}","").replace("\t","").replace(".",". ")
+
     return title,content
 
 @login_required
@@ -44,12 +47,13 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     info.check=-1 #변경완료 check
     info.updated_at=timezone.now()
     info.category=predict_category(info.content) #고치기
+    tfidfwordcloud(info.content,info.id) #워드클라우드
+    info.content=summarize(info.content,word_count=70) #본문요약
     info.save()
 
     request.user.profile.level=0#url 내용 입력받아 저장하고 다시 첫단계로
     request.user.profile.save()
     # print(request.user.profile.level)
-    # print(info.title)
     return redirect('index')
 
 def analyze(request): #맞나요? 해서 맞다하면 여기로옴
@@ -61,15 +65,15 @@ def analyze(request): #맞나요? 해서 맞다하면 여기로옴
     # 전처리하고 check값 -1로 바꿔주기(이 url 전처리 다했다 인증임)
     info=URLAnalyze.objects.get(check=request.user.id)
     info.category=predict_category(info.content) #카테고리도 여기서
-    
+    tfidfwordcloud(info.content,info.id) #워드클라우드
+    info.content=summarize(info.content,word_count=70) #본문요약
     info.check=-1
     info.save()
-    # print(predict_category(info.content))
-    
     return redirect('analyze:URL_detail',info.id)
 
 def URL_detail(request,id):
     urlinfo=get_object_or_404(URLAnalyze,pk=id)
+    
     return render(request,'detail.html',{'urlinfo':urlinfo})
 
 def URL_delete(request,id):

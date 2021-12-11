@@ -249,7 +249,7 @@ h1, h2, h3, h4, h5, h6 {
 #hero {
   width: 100%;
   height: 100vh;
-  background: url("") top right no-repeat;
+  background: url("../img/main.jpg")  no-repeat;
   background-size: cover;
   position: relative;
 }
@@ -319,14 +319,18 @@ h1, h2, h3, h4, h5, h6 {
 section {
   padding: 60px 0;
   overflow: hidden;
+
 }
 
 .section-title {
   text-align: center;
   padding-bottom: 30px;
+  
+  
+  
 }
 .section-title h2 {
-  font-size: 32px;
+  
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 20px;

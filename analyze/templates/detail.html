@@ -1,6 +1,7 @@
 {% extends 'base.html'%}
 {% load static %}
 {% block content %}
+<script src="{% static 'js/jquery-latest.min.js' %}"></script>
 
 <section id="portfolio-details" class="portfolio-details">
     <div class="container">
@@ -10,15 +11,15 @@
             <div class="col-lg-8">
                 <div class="portfolio-details-slider swiper">
                     <div class="swiper-wrapper align-items-center">
+                        
+                        <div style="width:100%; height:100%; text-align:center;" class="fwordcloud swiper-slide">
+                            <img style="witdh:100%; height:100%; max-width:630px; max-height:630px;" src="{% get_static_prefix %}img/wordcloud/wordcloud{{urlinfo.id}}-1.jpg" alt="워드클라우드1"/>
+                        </div>
+                        <div style="width:100%; height:100%; text-align:center;" class="swiper-slide">
+                            {% comment %} <img style="witdh:100%; height:100%; max-width:630px; max-height:630px;" src="{% static 'img/word.jpg' %}" alt=""> {% endcomment %}
 
-                        <div class="swiper-slide">
                         </div>
 
-                        <div class="swiper-slide">
-                        </div>
-
-                        <div class="swiper-slide">
-                        </div>
 
                     </div>
                     <div class="swiper-pagination"></div>
@@ -29,8 +30,8 @@
                 <div class="portfolio-info">
                     <h3>{{urlinfo.title}}</h3>
                     <ul>
+
                         <li><strong>키워드</strong>: 키워드키워드</li>
-                        <li><strong>요약</strong>: 요약요약</li>
                         <li><strong>카테고리</strong>: {{urlinfo.category}}</li>
 
                         <li><strong>게시물 수정</strong>: {{urlinfo.created_at}}</li>
@@ -41,11 +42,12 @@
                     </ul>
                 </div>
                 <div class="portfolio-description">
-                    <h2>본문</h2>
+                    <h2>본문 요약</h2>
                     <p>
                         {{urlinfo.content}}
                     </p>
                 </div>
+                {{urlinfo.image}}
             </div>
 
         </div>
