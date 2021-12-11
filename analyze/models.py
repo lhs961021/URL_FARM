@@ -22,3 +22,11 @@ class url_taken_by_user(models.Model): #다대다 관계를 위한 중개모델
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     time=models.DateTimeField(auto_now_add=True)
     
+
+class Memo(models.Model):
+    id = models.AutoField(primary_key=True)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE) #작성자
+    urlanalyze = models.ForeignKey(URLAnalyze, on_delete=models.CASCADE, related_name="memos")
+    memo=models.TextField()
+    created_at = models.DateTimeField(auto_now=False)
+    updated_at = models.DateTimeField(auto_now=True)
