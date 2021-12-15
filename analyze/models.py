@@ -13,6 +13,8 @@ class URLAnalyze(models.Model):
     taken= models.ManyToManyField(User,related_name='brought',
                                  through='url_taken_by_user') #퍼간거
     category = models.CharField(max_length=10,null=True)
+    keyword = models.JSONField(null=True)
+    # image = models.ImageField(upload_to="cloud/",null=True,blank=True)
     # 이미지랑 요약본이랑 주요 키워드 정도도 추가해야함, 메모모델도
     
 class url_taken_by_user(models.Model): #다대다 관계를 위한 중개모델
@@ -20,3 +22,11 @@ class url_taken_by_user(models.Model): #다대다 관계를 위한 중개모델
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     time=models.DateTimeField(auto_now_add=True)
     
+
+class Memo(models.Model):
+    id = models.AutoField(primary_key=True)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE) #작성자
+    urlanalyze = models.ForeignKey(URLAnalyze, on_delete=models.CASCADE, related_name="memos")
+    memo=models.TextField()
+    created_at = models.DateTimeField(auto_now=False)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -1,11 +1,15 @@
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 import requests
 from bs4 import BeautifulSoup
+from gensim.summarization.summarizer import summarize
 from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from ml.predict import predict_category
-
+from ml.predict import predict_category,tfidfwordcloud,krwordrank_keyword_wordcloud
+from django.contrib.auth.decorators import login_required
+from analyze.models import Memo
+from django.views.decorators.csrf import csrf_exempt
+import json
 # Create your views here.
 
 def beautifulcrawl(url):
@@ -14,7 +18,8 @@ def beautifulcrawl(url):
     soup = BeautifulSoup(webpage.content,"html.parser")
     title=soup.title.string
     content=soup.find('div',attrs={'id':'articleBodyContents'})
-    content=content.get_text().replace("\n","").replace("// flash 오류를 우회하기 위한 함수 추가function _flash_removeCallback() {}","").replace("\t","")
+    content=content.get_text().replace("\n","").replace("// flash 오류를 우회하기 위한 함수 추가function _flash_removeCallback() {}","").replace("\t","").replace(".",". ")
+
     return title,content
 
 @login_required
@@ -44,12 +49,17 @@ def modify(request): #크롤링 내용이랑 달라서 내용 변경해야할때
     info.check=-1 #변경완료 check
     info.updated_at=timezone.now()
     info.category=predict_category(info.content) #고치기
+    
+    tfidfwordcloud(info.content,info.id) #워드클라우드
+    keyword=krwordrank_keyword_wordcloud(info.content,info.id) #krwordrank
+    info.keyword=keyword
+    
+    info.content=summarize(info.content,word_count=70) #본문요약
     info.save()
 
     request.user.profile.level=0#url 내용 입력받아 저장하고 다시 첫단계로
     request.user.profile.save()
     # print(request.user.profile.level)
-    # print(info.title)
     return redirect('index')
 
 def analyze(request): #맞나요? 해서 맞다하면 여기로옴
@@ -61,16 +71,18 @@ def analyze(request): #맞나요? 해서 맞다하면 여기로옴
     # 전처리하고 check값 -1로 바꿔주기(이 url 전처리 다했다 인증임)
     info=URLAnalyze.objects.get(check=request.user.id)
     info.category=predict_category(info.content) #카테고리도 여기서
-    
+    tfidfwordcloud(info.content,info.id) #워드클라우드
+    keyword=krwordrank_keyword_wordcloud(info.content,info.id) #krwordrank
+    info.keyword=keyword
+    info.content=summarize(info.content,word_count=70) #본문요약
     info.check=-1
     info.save()
-    # print(predict_category(info.content))
-    
     return redirect('analyze:URL_detail',info.id)
 
 def URL_detail(request,id):
     urlinfo=get_object_or_404(URLAnalyze,pk=id)
-    return render(request,'detail.html',{'urlinfo':urlinfo})
+    memo=Memo.objects.filter(writer=request.user)
+    return render(request,'detail.html',{'urlinfo':urlinfo,'memo':memo})
 
 def URL_delete(request,id):
     urlinfo=get_object_or_404(URLAnalyze,pk=id)
@@ -88,3 +100,42 @@ def taken_url(request, id):
         url.taken.add(me)
     
     return redirect('users:mypage')
+
+@login_required
+def makememo(request,url_id):
+    url=get_object_or_404(URLAnalyze,pk=url_id)
+    new_memo=Memo()
+    new_memo.memo=''
+    new_memo.writer=request.user
+    new_memo.created_at=timezone.now()
+    new_memo.updated_at=timezone.now()
+    new_memo.urlanalyze=url
+    new_memo.save()
+    return redirect("analyze:URL_detail",url_id)
+
+@csrf_exempt
+def updatememo(request,id):
+    update_memo=get_object_or_404(Memo,pk=id)
+    update_memo.memo=request.POST['memo']
+    update_memo.updated_at=timezone.now()
+    update_memo.save()
+    return redirect("analyze:URL_detail",update_memo.urlanalyze.id)
+
+@csrf_exempt
+def deletememo(request):
+    param=json.loads(request.body)
+    arr=param['checked_id']
+    cnt=param['cnt']
+    i=0
+    while(i<cnt):
+        deletememo=get_object_or_404(Memo,pk=arr[i])
+        deletememo.delete()
+        i+=1
+    if i==cnt:
+        check=1
+    else:
+        check=0
+    context={
+        "check":check
+    }
+    return HttpResponse(json.dumps(context),content_type="application/json")

@@ -1,6 +1,9 @@
 from django.shortcuts import redirect, render
 from analyze.models import URLAnalyze
+# from django.conf import settings
+# import os
 def index(request):
+    
     if request.user.is_authenticated:
         if request.user.profile.level==1:
             info=URLAnalyze.objects.get(check=request.user.id)
