@@ -27,18 +27,18 @@ URL 요약 정리 공유 사이트
 
 ### 1.3 프로젝트 설계
 
-개념설계 : 
-   기사분석에 필요한 머신러닝 모델 설계
-      - 가장 정확도가 높은 모델 선정
-      - okt()를 이용해 pos(명사+형용사)로 모델학습
-상세설계:
-   서비스를 구체화 시킬 웹서비스 설계
-      - python을 기반으로한 django 사용
-      - 각 웹페이지별 필요한 기술 설계
-구현 이론:
-      - lstm, xgboost, randomforest
-      - tfidf, kr-wordrank
-      - python, django
+개념설계 :<br> 
+   기사분석에 필요한 머신러닝 모델 설계<br> 
+      - 가장 정확도가 높은 모델 선정<br> 
+      - okt()를 이용해 pos(명사+형용사)로 모델학습<br> 
+상세설계:<br> 
+   서비스를 구체화 시킬 웹서비스 설계<br> 
+      - python을 기반으로한 django 사용<br> 
+      - 각 웹페이지별 필요한 기술 설계<br> 
+구현 이론:<br> 
+      - lstm, xgboost, randomforest<br> 
+      - tfidf, kr-wordrank<br> 
+      - python, django<br> 
       
 ### 1.4 과제 주요 기능
 
