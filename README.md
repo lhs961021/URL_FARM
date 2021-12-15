@@ -67,8 +67,7 @@ requirements.txt
 서버 배포는 aws EC2의 Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - 64bit, t2.micro(프리티어) 인스턴스를 이용한다. 
 
 ## 6. 자료
-[프로젝트 계획서 바로가기](2021 경진대회 수행계획서_팀싱가포르.hwp)
-
+[프로젝트 계획서 바로가기](Farm경진대회_수행계획서_팀싱가포르.hwp)
 [프로젝트 결과 보고서 요약본 바로가기](2._Farm경진대회_결과보고서_요약본_팀싱가포르.hwp)  
 [프로젝트 결과 보고서 바로가기](1._Farm경진대회_결과보고서_팀싱가포르.hwp)  
 [프로젝트 발표 ppt 바로가기](URLfarm_발표ppt_팀싱가포르.pptx)  
